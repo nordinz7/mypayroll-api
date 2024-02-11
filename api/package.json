@@ -1,0 +1,22 @@
+{
+  "name": "api",
+  "module": "src/server.ts",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.56.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "dev": "bun run --watch src/server.ts",
+    "dev:prod": "bun run src/server.ts",
+    "build:ts": "rm -rf dist && tsc",
+    "watch:ts": "tsc -w",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix"
+  },
+  "type": "module"
+}

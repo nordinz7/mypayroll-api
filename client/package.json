@@ -1,0 +1,19 @@
+{
+  "name": "client",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "dev:prod": "bun run src/index.ts",
+    "build:ts": "rm -rf dist && tsc",
+    "watch:ts": "tsc -w",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
