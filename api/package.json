@@ -3,6 +3,7 @@
   "module": "src/server.ts",
   "devDependencies": {
     "@types/bun": "latest",
+    "@types/jsonwebtoken": "^9.0.5",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.56.0"
@@ -18,5 +19,8 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2"
+  }
 }

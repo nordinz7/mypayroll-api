@@ -1,8 +1,5 @@
-import {type Serve} from "bun";
-
 export default {
-  fetch(req) {
-    console.log('--------req root',req  )
-    return new Response("Bun!");
-  },
-} satisfies Serve;
+    GET(req: Request) {
+        return new Response(JSON.stringify({root: true}))
+    },
+}
