@@ -18,7 +18,13 @@ const server = Bun.serve({
             const  routeHandler  = await import(match.filePath) // dynamically import the handler
 
             try {
-                return routeHandler?.default?.[req.method](req) || routeHandler?.[req.method](req) // call the handler and return the response
+                const fetchFnc = routeHandler?.default?.[req.method] || routeHandler?.[req.method]
+
+                if (!fetchFnc){
+                    return new Response('Method not found for this route')
+                }
+
+                return fetchFnc(req) // call the handler and return the response
             } catch (error) {
                 console.error(error)
                 return new Response(`500 Internal Server Error at ${match.filePath}`, { status: 500 })
