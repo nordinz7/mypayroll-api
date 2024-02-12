@@ -1,5 +1,7 @@
+import type { RouteHandlerModule } from "../../types"
+
 export default {
-    GET(req: Request) {
+    GET:(req: Request) => {
         return new Response(JSON.stringify({'widget': {
             'debug': 'on',
             'window': {
@@ -28,4 +30,4 @@ export default {
         }}
         ))
     },
-}
+} satisfies RouteHandlerModule

@@ -1,0 +1,24 @@
+FROM --platform=arm64 oven/bun:1.0.25
+
+LABEL maintainer="Nordin <vipnordin@gmail.com>"
+
+USER root
+
+ENV APP_HOME /code
+RUN mkdir -p "$APP_HOME"
+
+# Define working directory.
+WORKDIR $APP_HOME
+
+# Add individually so it can be cached
+COPY package.json $APP_HOME/package.json
+
+# Bundle app source
+COPY . $APP_HOME
+
+RUN rm -rf node_modules \
+  && bun install
+
+EXPOSE 8000
+
+CMD ["bun", "dev"]

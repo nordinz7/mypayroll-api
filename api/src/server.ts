@@ -1,3 +1,5 @@
+import { DbSingleton } from './plugins/db'
+
 const router = new Bun.FileSystemRouter({
     dir: process.cwd() + '/src/routes',
     style: 'nextjs'
@@ -10,7 +12,9 @@ const server = Bun.serve({
     fetch: async(req)=> {
         const url = new URL(req.url)
 
-        Bun.env.NODE_ENV === 'development' && console.log('Registered routes',router.routes )
+        const db = await DbSingleton.getInstance()
+
+        Bun.env.NODE_ENV === 'development' && console.log('Registered routes',Object.keys(router.routes ))
 
         const match = router.match(url.pathname) // get the match from FileSystemRouter
 
@@ -24,7 +28,7 @@ const server = Bun.serve({
                     return new Response('Method not found for this route')
                 }
 
-                return fetchFnc(req) // call the handler and return the response
+                return fetchFnc(req, db) // call the handler and return the response
             } catch (error) {
                 console.error(error)
                 return new Response(`500 Internal Server Error at ${match.filePath}`, { status: 500 })

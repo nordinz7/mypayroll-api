@@ -1,5 +1,5 @@
 export default {
-    GET: async(req: Request)=> {
+    POST: async(req: Request)=> {
 
         const rawData = await req.formData()
 

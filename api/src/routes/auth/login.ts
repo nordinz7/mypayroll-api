@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken'
 
 export default {
-    GET: async(req: Request)=> {
+    POST: async(req: Request)=> {
 
         const rawData = await req.formData()
 
@@ -27,9 +27,10 @@ export default {
             return new Response('Password incorrect!')
         }
 
-        const token  =await jwt.sign({username}, Bun.env.SECRET_KEY || 'secret')
+        const token  =await jwt.sign(parsedUser, Bun.env.SECRET_KEY || 'secret')
 
 
-        return new Response(JSON.stringify({ message: 'Success login', token}))
+        return  new Response(JSON.stringify({ message: 'Success login', token}))
+
     },
 }
