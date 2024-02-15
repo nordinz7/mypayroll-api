@@ -1,9 +1,8 @@
 import type { RouteHandlerModule } from "../../../types"
 
 export default {
-    GET(req: Request) {
-        const url = new URL(req.url)
-        console.log('--------url',url)
-        return new Response(Bun.file('/home/nordin/dev/projects/simple-auth/api/src/public/register.html'))
+    GET: async(req: Request, ctx)=> {
+        const file = await Bun.file('/home/nordin/dev/projects/simple-auth/api/src/public/register.html')
+        return new Response(file)
     },
 } satisfies RouteHandlerModule

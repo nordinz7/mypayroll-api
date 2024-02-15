@@ -1,3 +1,6 @@
+import type { RouteHandlerModule } from "../../../types"
+import { DbSingleton } from "../../plugins/db"
+
 export default {
     POST: async(req: Request)=> {
 
@@ -12,16 +15,16 @@ export default {
             return new Response('Missing fields: Bad data', {status: 401 })
         }
 
-        try {
-            await Bun.write(`/home/nordin/dev/projects/simple-auth/api/src/data/${username}.txt`, JSON.stringify({ name, email, username, password}))
-        } catch (error) {
-            return new Response('Failed to create user')
+        const db = await DbSingleton.getInstance()
+
+        const user = await db.users.findOne({ $or: [{username}, {email}] })
+
+        if (user){
+            return new Response('User already exist', {status: 401 })
         }
 
+        const res  = await db.users.insertOne({ name, email, username, password})
 
-
-
-
-        return new Response(JSON.stringify({ message: 'Successfully created new user, can try login'}))
+        return new Response(JSON.stringify({ message:  res.acknowledged ? 'Successfully created new user, can try login': 'Failed to create new user'}))
     },
-}
+} satisfies RouteHandlerModule

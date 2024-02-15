@@ -14,7 +14,7 @@ export const DbSingleton = (function () {
             const mongoClient = new MongoClient(dbUrl)
             await mongoClient.connect()
             const db = mongoClient.db()
-            console.log('--------mongoClient', mongoClient)
+
             const collections = [
                 'users',
             ]
