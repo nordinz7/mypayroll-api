@@ -1,0 +1,17 @@
+scalar DateTime
+
+type TimeStamp {
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type numberPagination {
+  count: Int
+  limit: Int
+  offset: Int
+}
+
+type Response {
+  success: Boolean
+  message: String
+}

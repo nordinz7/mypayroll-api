@@ -1,0 +1,25 @@
+type Enumeration {
+  id: ID!
+  employeeId: ID!
+
+  basicSalary: Float!
+  compensationItems: [CompensationItem]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type CompensationItem {
+  id: ID!
+  enumerationId: ID!
+
+  name: String!
+  amount: Float!
+  startDate: String!
+  endDate: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Query {
+  enumeration(_id: ID!): Enumeration
+}

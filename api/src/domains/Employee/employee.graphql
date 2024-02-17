@@ -1,0 +1,58 @@
+type Employee {
+  id: ID!
+  name: String!
+  birthDate: DateTime!
+  religion: Religion
+  race: Race
+  nationality: String!
+  martialStatus: MartialStatus
+  qualification: String
+  educationLevel: EducationLevel
+
+  spouseName: String
+  spouseOccupation: String
+  children: Int
+
+  enumeration: Enumeration
+
+  phone: String!
+  email: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+enum MartialStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+}
+
+enum Religion {
+  ISLAM
+  CHRISTIAN
+  BUDDHA
+  HINDU
+  OTHER
+}
+
+enum Race {
+  MALAY
+  CHINESE
+  INDIAN
+  OTHER
+}
+
+enum EducationLevel {
+  PRIMARY
+  SECONDARY
+  POST_SECONDARY
+  DIPLOMA
+  DEGREE
+  MASTER
+  PHD
+}
+
+type Query {
+  employee(_id: ID!): Employee
+}

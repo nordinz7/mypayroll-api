@@ -16,6 +16,8 @@ export const DbSingleton = (function () {
             const db = mongoClient.db()
 
             const collections = [
+                'enumerations',
+                'employees',
                 'users',
             ]
 
