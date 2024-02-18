@@ -5,8 +5,3 @@ export const config = {
   SECRET_KEY: Bun.env.SECRET_KEY || 'secret',
   MONGOD_URL_STRING: Bun.env.MONGOD_URL_STRING || 'mongodb://localhost:27017/test'
 }
-
-
-export default {
-  MONGOD_URL_STRING: 'mongodb://localhost:27017/test'
-}

@@ -1,5 +1,5 @@
 type Enumeration {
-  id: ID!
+  _id: ID!
   employeeId: ID!
 
   basicSalary: Float!
@@ -9,7 +9,7 @@ type Enumeration {
 }
 
 type CompensationItem {
-  id: ID!
+  _id: ID!
   enumerationId: ID!
 
   name: String!

@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql'
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -15,18 +15,25 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   DateTime: { input: any; output: any; }
+  JSON: { input: any; output: any; }
 };
 
 export type CompensationItem = {
   __typename?: 'CompensationItem';
+  _id: Scalars['ID']['output'];
   amount: Scalars['Float']['output'];
   createdAt: Scalars['DateTime']['output'];
   endDate?: Maybe<Scalars['String']['output']>;
   enumerationId: Scalars['ID']['output'];
-  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   startDate: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
+};
+
+export type CreateEmployeeInput = {
+  birthDate: Scalars['DateTime']['input'];
+  name: Scalars['String']['input'];
+  nationality: Scalars['String']['input'];
 };
 
 export enum EducationLevel {
@@ -41,17 +48,17 @@ export enum EducationLevel {
 
 export type Employee = {
   __typename?: 'Employee';
+  _id?: Maybe<Scalars['ID']['output']>;
   birthDate: Scalars['DateTime']['output'];
   children?: Maybe<Scalars['Int']['output']>;
   createdAt: Scalars['String']['output'];
   educationLevel?: Maybe<EducationLevel>;
   email?: Maybe<Scalars['String']['output']>;
   enumeration?: Maybe<Enumeration>;
-  id: Scalars['ID']['output'];
   martialStatus?: Maybe<MartialStatus>;
   name: Scalars['String']['output'];
   nationality: Scalars['String']['output'];
-  phone: Scalars['String']['output'];
+  phone?: Maybe<Scalars['String']['output']>;
   qualification?: Maybe<Scalars['String']['output']>;
   race?: Maybe<Race>;
   religion?: Maybe<Religion>;
@@ -62,11 +69,11 @@ export type Employee = {
 
 export type Enumeration = {
   __typename?: 'Enumeration';
+  _id: Scalars['ID']['output'];
   basicSalary: Scalars['Float']['output'];
   compensationItems?: Maybe<Array<Maybe<CompensationItem>>>;
   createdAt: Scalars['DateTime']['output'];
   employeeId: Scalars['ID']['output'];
-  id: Scalars['ID']['output'];
   updatedAt: Scalars['DateTime']['output'];
 };
 
@@ -76,6 +83,16 @@ export enum MartialStatus {
   Single = 'SINGLE',
   Widowed = 'WIDOWED'
 }
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createEmployee?: Maybe<Response>;
+};
+
+
+export type MutationCreateEmployeeArgs = {
+  input?: InputMaybe<CreateEmployeeInput>;
+};
 
 export type Query = {
   __typename?: 'Query';
@@ -96,7 +113,7 @@ export type QueryEnumerationArgs = {
 
 
 export type QueryUserArgs = {
-  id: Scalars['ID']['input'];
+  _id: Scalars['ID']['input'];
 };
 
 export enum Race {
@@ -128,9 +145,9 @@ export type TimeStamp = {
 
 export type User = {
   __typename?: 'User';
+  _id: Scalars['ID']['output'];
   createdAt: Scalars['String']['output'];
   email: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   password: Scalars['String']['output'];
   updatedAt: Scalars['String']['output'];
@@ -216,6 +233,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CompensationItem: ResolverTypeWrapper<CompensationItem>;
+  CreateEmployeeInput: CreateEmployeeInput;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   EducationLevel: EducationLevel;
   Employee: ResolverTypeWrapper<Employee>;
@@ -223,7 +241,9 @@ export type ResolversTypes = {
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  JSON: ResolverTypeWrapper<Scalars['JSON']['output']>;
   MartialStatus: MartialStatus;
+  Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   Race: Race;
   Religion: Religion;
@@ -238,12 +258,15 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   CompensationItem: CompensationItem;
+  CreateEmployeeInput: CreateEmployeeInput;
   DateTime: Scalars['DateTime']['output'];
   Employee: Employee;
   Enumeration: Enumeration;
   Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
+  JSON: Scalars['JSON']['output'];
+  Mutation: {};
   Query: {};
   Response: Response;
   String: Scalars['String']['output'];
@@ -253,11 +276,11 @@ export type ResolversParentTypes = {
 };
 
 export type CompensationItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['CompensationItem'] = ResolversParentTypes['CompensationItem']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   amount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   endDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   enumerationId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   startDate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -269,17 +292,17 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type EmployeeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Employee'] = ResolversParentTypes['Employee']> = {
+  _id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   birthDate?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   children?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   educationLevel?: Resolver<Maybe<ResolversTypes['EducationLevel']>, ParentType, ContextType>;
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   enumeration?: Resolver<Maybe<ResolversTypes['Enumeration']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   martialStatus?: Resolver<Maybe<ResolversTypes['MartialStatus']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nationality?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  phone?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  phone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   qualification?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   race?: Resolver<Maybe<ResolversTypes['Race']>, ParentType, ContextType>;
   religion?: Resolver<Maybe<ResolversTypes['Religion']>, ParentType, ContextType>;
@@ -290,19 +313,27 @@ export type EmployeeResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type EnumerationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Enumeration'] = ResolversParentTypes['Enumeration']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   basicSalary?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   compensationItems?: Resolver<Maybe<Array<Maybe<ResolversTypes['CompensationItem']>>>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   employeeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['JSON'], any> {
+  name: 'JSON';
+}
+
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createEmployee?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, Partial<MutationCreateEmployeeArgs>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   employee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType, RequireFields<QueryEmployeeArgs, '_id'>>;
   enumeration?: Resolver<Maybe<ResolversTypes['Enumeration']>, ParentType, ContextType, RequireFields<QueryEnumerationArgs, '_id'>>;
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, '_id'>>;
 };
 
 export type ResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['Response'] = ResolversParentTypes['Response']> = {
@@ -318,9 +349,9 @@ export type TimeStampResolvers<ContextType = any, ParentType extends ResolversPa
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -339,6 +370,8 @@ export type Resolvers<ContextType = any> = {
   DateTime?: GraphQLScalarType;
   Employee?: EmployeeResolvers<ContextType>;
   Enumeration?: EnumerationResolvers<ContextType>;
+  JSON?: GraphQLScalarType;
+  Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Response?: ResponseResolvers<ContextType>;
   TimeStamp?: TimeStampResolvers<ContextType>;

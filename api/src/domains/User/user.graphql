@@ -1,5 +1,5 @@
 type User {
-  id: ID!
+  _id: ID!
   name: String!
   email: String!
   password: String!
@@ -8,5 +8,5 @@ type User {
 }
 
 type Query {
-  user(id: ID!): User!
+  user(_id: ID!): User!
 }

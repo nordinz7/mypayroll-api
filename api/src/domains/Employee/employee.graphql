@@ -1,10 +1,10 @@
 type Employee {
-  id: ID!
+  _id: ID
   name: String!
   birthDate: DateTime!
+  nationality: String!
   religion: Religion
   race: Race
-  nationality: String!
   martialStatus: MartialStatus
   qualification: String
   educationLevel: EducationLevel
@@ -15,7 +15,7 @@ type Employee {
 
   enumeration: Enumeration
 
-  phone: String!
+  phone: String
   email: String
   createdAt: String!
   updatedAt: String!
@@ -53,6 +53,16 @@ enum EducationLevel {
   PHD
 }
 
+input CreateEmployeeInput {
+  name: String!
+  birthDate: DateTime!
+  nationality: String!
+}
+
 type Query {
   employee(_id: ID!): Employee
+}
+
+type Mutation {
+  createEmployee(input: CreateEmployeeInput): Response
 }
