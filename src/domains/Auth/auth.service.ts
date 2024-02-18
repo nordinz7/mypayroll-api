@@ -18,7 +18,7 @@ export const login = async (email: string, password: string) => {
 
   const db = await DbSingleton.getInstance()
 
-  const user = await db.users.findOne({...valid})
+  const user = await db.users.findOne({ email: valid.email })
 
   if (!user) {
     throw SevenBoom.notFound('User not found')
