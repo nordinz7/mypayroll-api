@@ -1,5 +1,5 @@
 import type { RouteHandlerModule } from '../../../types'
-import { DbSingleton } from '../../plugins/db'
+import { DbSingleton } from '../../utils/db'
 
 export default {
   POST: async(req: Request)=> {

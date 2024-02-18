@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql'
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -86,12 +86,53 @@ export enum MartialStatus {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  changePassword?: Maybe<Response>;
   createEmployee?: Maybe<Response>;
+  forgotPassword?: Maybe<Response>;
+  login?: Maybe<Response>;
+  logout?: Maybe<Response>;
+  register?: Maybe<Response>;
+  resendVerificationEmail?: Maybe<Response>;
+  resetPassword?: Maybe<Response>;
+  verifyEmail?: Maybe<Response>;
+};
+
+
+export type MutationChangePasswordArgs = {
+  newPassword: Scalars['String']['input'];
+  oldPassword: Scalars['String']['input'];
 };
 
 
 export type MutationCreateEmployeeArgs = {
   input?: InputMaybe<CreateEmployeeInput>;
+};
+
+
+export type MutationForgotPasswordArgs = {
+  email: Scalars['String']['input'];
+};
+
+
+export type MutationLoginArgs = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+
+export type MutationRegisterArgs = {
+  input?: InputMaybe<RegisterInput>;
+};
+
+
+export type MutationResetPasswordArgs = {
+  password: Scalars['String']['input'];
+  token: Scalars['String']['input'];
+};
+
+
+export type MutationVerifyEmailArgs = {
+  token: Scalars['String']['input'];
 };
 
 export type Query = {
@@ -123,6 +164,15 @@ export enum Race {
   Other = 'OTHER'
 }
 
+export type RegisterInput = {
+  birthDate: Scalars['String']['input'];
+  confirmPassword: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  username: Scalars['String']['input'];
+};
+
 export enum Religion {
   Buddha = 'BUDDHA',
   Christian = 'CHRISTIAN',
@@ -133,6 +183,7 @@ export enum Religion {
 
 export type Response = {
   __typename?: 'Response';
+  data?: Maybe<Scalars['JSON']['output']>;
   message?: Maybe<Scalars['String']['output']>;
   success?: Maybe<Scalars['Boolean']['output']>;
 };
@@ -246,6 +297,7 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   Race: Race;
+  RegisterInput: RegisterInput;
   Religion: Religion;
   Response: ResolverTypeWrapper<Response>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -268,6 +320,7 @@ export type ResolversParentTypes = {
   JSON: Scalars['JSON']['output'];
   Mutation: {};
   Query: {};
+  RegisterInput: RegisterInput;
   Response: Response;
   String: Scalars['String']['output'];
   TimeStamp: TimeStamp;
@@ -327,7 +380,15 @@ export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  changePassword?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationChangePasswordArgs, 'newPassword' | 'oldPassword'>>;
   createEmployee?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, Partial<MutationCreateEmployeeArgs>>;
+  forgotPassword?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationForgotPasswordArgs, 'email'>>;
+  login?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
+  logout?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType>;
+  register?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, Partial<MutationRegisterArgs>>;
+  resendVerificationEmail?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType>;
+  resetPassword?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'password' | 'token'>>;
+  verifyEmail?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationVerifyEmailArgs, 'token'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
@@ -337,6 +398,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type ResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['Response'] = ResolversParentTypes['Response']> = {
+  data?: Resolver<Maybe<ResolversTypes['JSON']>, ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   success?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

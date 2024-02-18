@@ -1,0 +1,19 @@
+input RegisterInput {
+  name: String!
+  birthDate: String!
+  email: String!
+  username: String!
+  password: String!
+  confirmPassword: String!
+}
+
+type Mutation {
+  login(email: String!, password: String!): Response
+  register(input: RegisterInput): Response
+  forgotPassword(email: String!): Response
+  resetPassword(token: String!, password: String!): Response
+  changePassword(oldPassword: String!, newPassword: String!): Response
+  verifyEmail(token: String!): Response
+  resendVerificationEmail: Response
+  logout: Response
+}
