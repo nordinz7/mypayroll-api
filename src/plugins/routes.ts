@@ -1,4 +1,3 @@
-
 const router = new Bun.FileSystemRouter({
   dir: process.cwd() + '/src/routes',
   style: 'nextjs'
@@ -27,7 +26,6 @@ const router = new Bun.FileSystemRouter({
 //             return new Response(`500 Internal Server Error at ${match.filePath}`, { status: 500 })
 //         }
 //     }
-
 
 //     return new Response('404 Not Found', { status: 404 })
 // },

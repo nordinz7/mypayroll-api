@@ -1,5 +1,5 @@
-import type { MutationLoginArgs, MutationRegisterArgs } from "../../types"
-import { login, register } from "./auth.service"
+import type { MutationLoginArgs, MutationRegisterArgs } from '../../types'
+import { login, register } from './auth.service'
 
 export default {
   Mutation: {

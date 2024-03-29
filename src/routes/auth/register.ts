@@ -2,8 +2,7 @@ import type { RouteHandlerModule } from '../../../types'
 import { DbSingleton } from '../../utils/db'
 
 export default {
-  POST: async(req: Request)=> {
-
+  POST: async (req: Request) => {
     const rawData = await req.formData()
 
     const name = rawData.get('name')
@@ -11,20 +10,20 @@ export default {
     const username = rawData.get('username')
     const password = rawData.get('password')
 
-    if (!name || !email || !username || !password){
-      return new Response('Missing fields: Bad data', {status: 401 })
+    if (!name || !email || !username || !password) {
+      return new Response('Missing fields: Bad data', { status: 401 })
     }
 
     const db = await DbSingleton.getInstance()
 
-    const user = await db.users.findOne({ $or: [{username}, {email}] })
+    const user = await db.users.findOne({ $or: [{ username }, { email }] })
 
-    if (user){
-      return new Response('User already exist', {status: 401 })
+    if (user) {
+      return new Response('User already exist', { status: 401 })
     }
 
-    const res  = await db.users.insertOne({ name, email, username, password})
+    const res = await db.users.insertOne({ name, email, username, password })
 
-    return new Response(JSON.stringify({ message:  res.acknowledged ? 'Successfully created new user, can try login': 'Failed to create new user'}))
-  },
+    return new Response(JSON.stringify({ message: res.acknowledged ? 'Successfully created new user, can try login' : 'Failed to create new user' }))
+  }
 } satisfies RouteHandlerModule

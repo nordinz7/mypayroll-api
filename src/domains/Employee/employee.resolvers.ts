@@ -10,25 +10,25 @@ export default {
       }
       const db = await DbSingleton.getInstance()
 
-      const employee  =  await db.employees.findOne({ _id: p._id})
+      const employee = await db.employees.findOne({ _id: p._id })
 
       if (!employee) {
-        return SevenBoom.notFound('Employee not found');
+        return SevenBoom.notFound('Employee not found')
       }
 
       return employee
-    },
+    }
   },
   Mutation: {
-    createEmployee: async (_: any, {input}: MutationCreateEmployeeArgs, __: any) => {
-      if (!input){
+    createEmployee: async (_: any, { input }: MutationCreateEmployeeArgs, __: any) => {
+      if (!input) {
         return SevenBoom.badRequest('Employee data is required')
       }
 
       const db = await DbSingleton.getInstance()
-      const employee = await db.employees.insertOne({...input})
+      const employee = await db.employees.insertOne({ ...input })
 
-      return { success: employee.acknowledged  }
-    },
+      return { success: employee.acknowledged }
+    }
   }
 }

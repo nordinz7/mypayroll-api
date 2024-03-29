@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql'
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -97,39 +97,32 @@ export type Mutation = {
   verifyEmail?: Maybe<Response>;
 };
 
-
 export type MutationChangePasswordArgs = {
   newPassword: Scalars['String']['input'];
   oldPassword: Scalars['String']['input'];
 };
 
-
 export type MutationCreateEmployeeArgs = {
   input?: InputMaybe<CreateEmployeeInput>;
 };
 
-
 export type MutationForgotPasswordArgs = {
   email: Scalars['String']['input'];
 };
-
 
 export type MutationLoginArgs = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
 };
 
-
 export type MutationRegisterArgs = {
   input?: InputMaybe<RegisterInput>;
 };
-
 
 export type MutationResetPasswordArgs = {
   password: Scalars['String']['input'];
   token: Scalars['String']['input'];
 };
-
 
 export type MutationVerifyEmailArgs = {
   token: Scalars['String']['input'];
@@ -142,16 +135,13 @@ export type Query = {
   user: User;
 };
 
-
 export type QueryEmployeeArgs = {
   _id: Scalars['ID']['input'];
 };
 
-
 export type QueryEnumerationArgs = {
   _id: Scalars['ID']['input'];
 };
-
 
 export type QueryUserArgs = {
   _id: Scalars['ID']['input'];
@@ -211,10 +201,7 @@ export type NumberPagination = {
   offset?: Maybe<Scalars['Int']['output']>;
 };
 
-
-
 export type ResolverTypeWrapper<T> = Promise<T> | T;
-
 
 export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
@@ -277,8 +264,6 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
   context: TContext,
   info: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
-
-
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
@@ -440,4 +425,3 @@ export type Resolvers<ContextType = any> = {
   User?: UserResolvers<ContextType>;
   numberPagination?: NumberPaginationResolvers<ContextType>;
 };
-

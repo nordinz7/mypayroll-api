@@ -1,8 +1,8 @@
-import type { RegisterInput } from "../../types"
-import { DbSingleton } from "../../utils/db"
-import schemaValidator from "../../utils/schemaValidator"
-import { loginSchema, registerSchema } from "./validation"
-import { SevenBoom } from "graphql-apollo-errors"
+import type { RegisterInput } from '../../types'
+import { DbSingleton } from '../../utils/db'
+import schemaValidator from '../../utils/schemaValidator'
+import { loginSchema, registerSchema } from './validation'
+import { SevenBoom } from 'graphql-apollo-errors'
 import jwt from 'jsonwebtoken'
 
 export const login = async (email: string, password: string) => {
@@ -10,7 +10,7 @@ export const login = async (email: string, password: string) => {
     throw SevenBoom.badRequest('Missing Email or Password')
   }
 
-  const valid = schemaValidator({email, password}, loginSchema)
+  const valid = schemaValidator({ email, password }, loginSchema)
 
   if (!valid) {
     throw SevenBoom.badRequest('Invalid data')
@@ -28,8 +28,7 @@ export const login = async (email: string, password: string) => {
     throw SevenBoom.unauthorized('Password incorrect')
   }
 
-
-  const token  = await jwt.sign(user, Bun.env.SECRET_KEY || 'secret')
+  const token = await jwt.sign(user, Bun.env.SECRET_KEY || 'secret')
 
   return { message: 'Success login', data: token, success: true }
 }
@@ -47,7 +46,7 @@ export const register = async (input: RegisterInput | undefined | null) => {
 
   const db = await DbSingleton.getInstance()
 
-  const query = { $or: [{email: valid.email}, {username: valid.username}] }
+  const query = { $or: [{ email: valid.email }, { username: valid.username }] }
 
   const user = await db.users.findOne(query)
 

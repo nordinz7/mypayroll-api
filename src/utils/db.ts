@@ -1,11 +1,11 @@
 import { MongoClient, Collection } from 'mongodb'
-import {config } from '../../app.config'
+import { config } from '../../app.config'
 import type { Employee, Enumeration, User } from '../types'
 
 const collections = {
-  'enumerations': Collection<Enumeration>,
-  'employees': Collection<Employee>,
-  'users': Collection<User>
+  enumerations: Collection<Enumeration>,
+  employees: Collection<Employee>,
+  users: Collection<User>
 } as const
 
 export const DbSingleton = (function () {

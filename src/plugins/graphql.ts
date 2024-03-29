@@ -11,13 +11,17 @@ export default () => {
   const resolversArray = loadFilesSync(path.resolve(__dirname, '../domains/**/*.resolvers.*'), { extensions: ['ts'], recursive: true })
   const resolvers: any = mergeResolvers(resolversArray)
 
-  return createYoga({ schema: createSchema({ typeDefs, resolvers }), graphiql: true, plugins: [
-    useJWT({
-      issuer: 'http://graphql-yoga.com',
-      signingKey: config.SECRET_KEY,
-      getToken: ({ request }) => {
-        return request.headers.get('authorization')
-      }
-    })
-  ]})
+  return createYoga({
+    schema: createSchema({ typeDefs, resolvers }),
+    graphiql: true,
+    plugins: [
+      useJWT({
+        issuer: 'http://graphql-yoga.com',
+        signingKey: config.SECRET_KEY,
+        getToken: ({ request }) => {
+          return request.headers.get('authorization')
+        }
+      })
+    ]
+  })
 }
