@@ -67,6 +67,18 @@ export type Employee = {
   updatedAt: Scalars['String']['output'];
 };
 
+export type Employees = {
+  __typename?: 'Employees';
+  pagination?: Maybe<NumberPagination>;
+  rows?: Maybe<Array<Maybe<Employee>>>;
+};
+
+export type EmployeesQueryInput = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  q?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type Enumeration = {
   __typename?: 'Enumeration';
   _id: Scalars['ID']['output'];
@@ -131,12 +143,17 @@ export type MutationVerifyEmailArgs = {
 export type Query = {
   __typename?: 'Query';
   employee?: Maybe<Employee>;
+  employees?: Maybe<Employees>;
   enumeration?: Maybe<Enumeration>;
   user: User;
 };
 
 export type QueryEmployeeArgs = {
   _id: Scalars['ID']['input'];
+};
+
+export type QueryEmployeesArgs = {
+  input?: InputMaybe<EmployeesQueryInput>;
 };
 
 export type QueryEnumerationArgs = {
@@ -273,6 +290,8 @@ export type ResolversTypes = {
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   EducationLevel: EducationLevel;
   Employee: ResolverTypeWrapper<Employee>;
+  Employees: ResolverTypeWrapper<Employees>;
+  EmployeesQueryInput: EmployeesQueryInput;
   Enumeration: ResolverTypeWrapper<Enumeration>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
@@ -298,6 +317,8 @@ export type ResolversParentTypes = {
   CreateEmployeeInput: CreateEmployeeInput;
   DateTime: Scalars['DateTime']['output'];
   Employee: Employee;
+  Employees: Employees;
+  EmployeesQueryInput: EmployeesQueryInput;
   Enumeration: Enumeration;
   Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
@@ -350,6 +371,12 @@ export type EmployeeResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type EmployeesResolvers<ContextType = any, ParentType extends ResolversParentTypes['Employees'] = ResolversParentTypes['Employees']> = {
+  pagination?: Resolver<Maybe<ResolversTypes['numberPagination']>, ParentType, ContextType>;
+  rows?: Resolver<Maybe<Array<Maybe<ResolversTypes['Employee']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type EnumerationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Enumeration'] = ResolversParentTypes['Enumeration']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   basicSalary?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
@@ -378,6 +405,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   employee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType, RequireFields<QueryEmployeeArgs, '_id'>>;
+  employees?: Resolver<Maybe<ResolversTypes['Employees']>, ParentType, ContextType, Partial<QueryEmployeesArgs>>;
   enumeration?: Resolver<Maybe<ResolversTypes['Enumeration']>, ParentType, ContextType, RequireFields<QueryEnumerationArgs, '_id'>>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, '_id'>>;
 };
@@ -416,6 +444,7 @@ export type Resolvers<ContextType = any> = {
   CompensationItem?: CompensationItemResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   Employee?: EmployeeResolvers<ContextType>;
+  Employees?: EmployeesResolvers<ContextType>;
   Enumeration?: EnumerationResolvers<ContextType>;
   JSON?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;

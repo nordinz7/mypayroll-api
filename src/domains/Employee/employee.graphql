@@ -21,6 +21,11 @@ type Employee {
   updatedAt: String!
 }
 
+type Employees {
+  rows: [Employee]
+  pagination: numberPagination
+}
+
 enum MartialStatus {
   SINGLE
   MARRIED
@@ -59,8 +64,15 @@ input CreateEmployeeInput {
   nationality: String!
 }
 
+input EmployeesQueryInput {
+  q: String
+  limit: Int
+  offset: Int
+}
+
 type Query {
   employee(_id: ID!): Employee
+  employees(input: EmployeesQueryInput): Employees
 }
 
 type Mutation {
