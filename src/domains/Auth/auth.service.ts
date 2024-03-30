@@ -1,6 +1,7 @@
+import { Op } from 'sequelize'
 import type { RegisterInput } from '../../types'
-import { DbSingleton } from '../../utils/db'
 import schemaValidator from '../../utils/schemaValidator'
+import { DbSingletonSql } from '../../utils/sqldb'
 import { loginSchema, registerSchema } from './validation'
 import { SevenBoom } from 'graphql-apollo-errors'
 import jwt from 'jsonwebtoken'
@@ -16,9 +17,9 @@ export const login = async (email: string, password: string) => {
     throw SevenBoom.badRequest('Invalid data')
   }
 
-  const db = await DbSingleton.getInstance()
+  const db = await DbSingletonSql.getInstance()
 
-  const user = await db.users.findOne({ email: valid.email })
+  const user = await db.models.users.findOne({ where: { email: valid.email } })
 
   if (!user) {
     throw SevenBoom.notFound('User not found')
@@ -44,17 +45,17 @@ export const register = async (input: RegisterInput | undefined | null) => {
     throw SevenBoom.badRequest('Invalid data')
   }
 
-  const db = await DbSingleton.getInstance()
+  const db = await DbSingletonSql.getInstance()
 
-  const query = { $or: [{ email: valid.email }, { username: valid.username }] }
+  const where = { [Op.or]: [{ email: valid.email }, { username: valid.username }] }
 
-  const user = await db.users.findOne(query)
+  const user = await db.models.users.findOne({ where })
 
   if (user) {
     throw SevenBoom.badRequest('User already exists')
   }
 
-  const newUser = await db.users.insertOne(valid)
+  const newUser = await db.models.users.create(valid)
 
   return { message: 'Success register', data: newUser, success: true }
 }

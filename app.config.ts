@@ -3,5 +3,9 @@ export const config = {
   HOSTNAME: Bun.env.HOSTNAME || 'localhost',
   NODE_ENV: Bun.env.NODE_ENV || 'development',
   SECRET_KEY: Bun.env.SECRET_KEY || 'secret',
-  MONGOD_URL_STRING: Bun.env.MONGOD_URL_STRING || 'mongodb://localhost:27017/test'
+  POSTGRES_DB: Bun.env.POSTGRES_DB || 'payroll',
+  POSTGRES_USER: Bun.env.POSTGRES_USER || 'postgres',
+  POSTGRES_PASSWORD: Bun.env.POSTGRES_PASSWORD || 'postgres',
+  POSTGRES_HOST: Bun.env.POSTGRES_HOST || 'localhost',
+  POSTGRES_PORT: Bun.env.POSTGRES_PORT || 5432,
 }

@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken'
 import type { RouteHandlerModule } from '../../../types'
-import { DbSingleton } from '../../utils/db'
+import { DbSingletonSql } from '../../utils/db'
 
 export default {
   POST: async (req: Request) => {
@@ -13,7 +13,7 @@ export default {
       return new Response('Missing fields: Bad data', { status: 401 })
     }
 
-    const db = await DbSingleton.getInstance()
+    const db = await DbSingletonSql.getInstance()
 
     const user = await db.users.findOne({ username })
 
