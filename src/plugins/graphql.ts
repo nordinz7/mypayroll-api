@@ -2,7 +2,6 @@ import { createYoga, createSchema } from 'graphql-yoga'
 import { loadFilesSync } from '@graphql-tools/load-files'
 import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge'
 import path from 'path'
-import { useJWT } from '@graphql-yoga/plugin-jwt'
 import { config } from '../../app.config'
 import type { Sequelize } from 'sequelize'
 
@@ -19,15 +18,6 @@ export default (sequelize: Sequelize) => {
   return createYoga({
     schema: createSchema({ typeDefs, resolvers }),
     graphiql: true,
-    plugins: [
-      useJWT({
-        issuer: 'http://graphql-yoga.com',
-        signingKey: config.SECRET_KEY,
-        getToken: ({ request }) => {
-          return request.headers.get('authorization')
-        }
-      })
-    ],
     context: {
       sequelize
     }
