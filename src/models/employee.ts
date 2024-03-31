@@ -23,10 +23,10 @@ export default (sequelize: Sequelize) => sequelize.define('employee', {
   createdAt: String!
   updatedAt: String!
  */
-  _id: {
-    type: DataTypes.UUID,
+  id: {
+    type: DataTypes.INTEGER,
     primaryKey: true,
-    defaultValue: DataTypes.UUIDV4
+    autoIncrement: true
   },
   name: {
     type: DataTypes.STRING,

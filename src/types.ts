@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql'
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -48,13 +48,13 @@ export enum EducationLevel {
 
 export type Employee = {
   __typename?: 'Employee';
-  _id?: Maybe<Scalars['ID']['output']>;
   birthDate: Scalars['DateTime']['output'];
   children?: Maybe<Scalars['Int']['output']>;
   createdAt: Scalars['String']['output'];
   educationLevel?: Maybe<EducationLevel>;
   email?: Maybe<Scalars['String']['output']>;
   enumeration?: Maybe<Enumeration>;
+  id?: Maybe<Scalars['ID']['output']>;
   martialStatus?: Maybe<MartialStatus>;
   name: Scalars['String']['output'];
   nationality: Scalars['String']['output'];
@@ -109,32 +109,39 @@ export type Mutation = {
   verifyEmail?: Maybe<Response>;
 };
 
+
 export type MutationChangePasswordArgs = {
   newPassword: Scalars['String']['input'];
   oldPassword: Scalars['String']['input'];
 };
 
+
 export type MutationCreateEmployeeArgs = {
   input?: InputMaybe<CreateEmployeeInput>;
 };
 
+
 export type MutationForgotPasswordArgs = {
   email: Scalars['String']['input'];
 };
+
 
 export type MutationLoginArgs = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
 };
 
+
 export type MutationRegisterArgs = {
   input?: InputMaybe<RegisterInput>;
 };
+
 
 export type MutationResetPasswordArgs = {
   password: Scalars['String']['input'];
   token: Scalars['String']['input'];
 };
+
 
 export type MutationVerifyEmailArgs = {
   token: Scalars['String']['input'];
@@ -148,17 +155,21 @@ export type Query = {
   user: User;
 };
 
+
 export type QueryEmployeeArgs = {
   _id: Scalars['ID']['input'];
 };
+
 
 export type QueryEmployeesArgs = {
   input?: InputMaybe<EmployeesQueryInput>;
 };
 
+
 export type QueryEnumerationArgs = {
   _id: Scalars['ID']['input'];
 };
+
 
 export type QueryUserArgs = {
   _id: Scalars['ID']['input'];
@@ -218,7 +229,10 @@ export type NumberPagination = {
   offset?: Maybe<Scalars['Int']['output']>;
 };
 
+
+
 export type ResolverTypeWrapper<T> = Promise<T> | T;
+
 
 export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
@@ -281,6 +295,8 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
   context: TContext,
   info: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
+
+
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
@@ -351,13 +367,13 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type EmployeeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Employee'] = ResolversParentTypes['Employee']> = {
-  _id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   birthDate?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   children?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   educationLevel?: Resolver<Maybe<ResolversTypes['EducationLevel']>, ParentType, ContextType>;
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   enumeration?: Resolver<Maybe<ResolversTypes['Enumeration']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   martialStatus?: Resolver<Maybe<ResolversTypes['MartialStatus']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nationality?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -454,3 +470,4 @@ export type Resolvers<ContextType = any> = {
   User?: UserResolvers<ContextType>;
   numberPagination?: NumberPaginationResolvers<ContextType>;
 };
+

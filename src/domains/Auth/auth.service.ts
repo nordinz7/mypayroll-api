@@ -1,12 +1,12 @@
 import { Op } from 'sequelize'
 import type { RegisterInput } from '../../types'
 import schemaValidator from '../../utils/schemaValidator'
-import { DbSingletonSql } from '../../utils/sqldb'
 import { loginSchema, registerSchema } from './validation'
 import { SevenBoom } from 'graphql-apollo-errors'
 import jwt from 'jsonwebtoken'
+import type { Context } from '../../plugins/graphql'
 
-export const login = async (email: string, password: string) => {
+export const login = async (email: string, password: string, ctx: Context) => {
   if (!email || !password) {
     throw SevenBoom.badRequest('Missing Email or Password')
   }
@@ -17,9 +17,7 @@ export const login = async (email: string, password: string) => {
     throw SevenBoom.badRequest('Invalid data')
   }
 
-  const db = await DbSingletonSql.getInstance()
-
-  const user = await db.models.users.findOne({ where: { email: valid.email } })
+  const user = await ctx.sequelize.models.users.findOne({ where: { email: valid.email } })
 
   if (!user) {
     throw SevenBoom.notFound('User not found')
@@ -34,7 +32,7 @@ export const login = async (email: string, password: string) => {
   return { message: 'Success login', data: token, success: true }
 }
 
-export const register = async (input: RegisterInput | undefined | null) => {
+export const register = async (input: RegisterInput | undefined | null, ctx: Context) => {
   if (!input) {
     throw SevenBoom.badRequest('Missing input')
   }
@@ -45,17 +43,15 @@ export const register = async (input: RegisterInput | undefined | null) => {
     throw SevenBoom.badRequest('Invalid data')
   }
 
-  const db = await DbSingletonSql.getInstance()
-
   const where = { [Op.or]: [{ email: valid.email }, { username: valid.username }] }
 
-  const user = await db.models.users.findOne({ where })
+  const user = await ctx.sequelize.models.users.findOne({ where })
 
   if (user) {
     throw SevenBoom.badRequest('User already exists')
   }
 
-  const newUser = await db.models.users.create(valid)
+  const newUser = await ctx.sequelize.models.users.create(valid)
 
   return { message: 'Success register', data: newUser, success: true }
 }

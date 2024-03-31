@@ -1,18 +1,16 @@
 import { SevenBoom } from 'graphql-apollo-errors'
 import type { MutationCreateEmployeeArgs, QueryEmployeeArgs, QueryEmployeesArgs } from '../../types'
-import { DbSingletonSql } from '../../utils/sqldb'
 import { Op } from 'sequelize'
+import type { Context } from '../../plugins/graphql'
 
 export default {
   Query: {
-    employee: async (_: any, p: QueryEmployeeArgs, __: any) => {
+    employee: async (_: any, p: QueryEmployeeArgs, ctx: Context) => {
       if (!p._id) {
         return SevenBoom.badRequest('Employee id is required')
       }
 
-      const db = await DbSingletonSql.getInstance()
-
-      const employee = await db.models.employee.findByPk(p._id)
+      const employee = await ctx.sequelize.models.employee.findByPk(p._id)
 
       if (!employee) {
         return SevenBoom.notFound('Employee not found')
@@ -20,12 +18,10 @@ export default {
 
       return employee
     },
-    employees: async (_: any, { input }: QueryEmployeesArgs, ___: any) => {
+    employees: async (_: any, { input }: QueryEmployeesArgs, ctx: Context) => {
       const { q = '', limit = 10, offset = 0 } = input
 
-      const db = await DbSingletonSql.getInstance()
-
-      const { count, rows } = await db.models.employee.findAndCountAll({
+      const { count, rows } = await ctx.sequelize.models.employee.findAndCountAll({
         where: {
           [Op.or]: [
             { name: { [Op.iLike]: `%${q}%` } }
@@ -40,14 +36,12 @@ export default {
     }
   },
   Mutation: {
-    createEmployee: async (_: any, { input }: MutationCreateEmployeeArgs, __: any) => {
+    createEmployee: async (_: any, { input }: MutationCreateEmployeeArgs, ctx: Context) => {
       if (!input) {
         return SevenBoom.badRequest('Employee data is required')
       }
 
-      const db = await DbSingletonSql.getInstance()
-
-      const res = await db.models.employee.create({ ...input })
+      const res = await ctx.sequelize.models.employee.create({ ...input })
 
       return { data: res.toJSON() }
     }
