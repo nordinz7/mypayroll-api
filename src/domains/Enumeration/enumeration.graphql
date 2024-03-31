@@ -1,7 +1,6 @@
 type Enumeration {
-  _id: ID!
-  employeeId: ID!
-
+  id: Int!
+  employeeId: Int!
   basicSalary: Float!
   compensationItems: [CompensationItem]
   createdAt: DateTime!
@@ -9,9 +8,9 @@ type Enumeration {
 }
 
 type CompensationItem {
-  _id: ID!
-  enumerationId: ID!
-
+  id: Int!
+  enumerationId: Int
+  employeeId: Int
   name: String!
   amount: Float!
   startDate: String!
@@ -20,6 +19,24 @@ type CompensationItem {
   updatedAt: DateTime!
 }
 
+input CreateCompensationItemInput {
+  name: String!
+  amount: Float!
+  startDate: String!
+  endDate: String
+}
+
+input UpdateEnumerationInput {
+  employeeId: Int!
+  basicSalary: Float!
+  compensationItems: [CreateCompensationItemInput]
+}
+
 type Query {
-  enumeration(_id: ID!): Enumeration
+  enumeration(id: Int!): Enumeration
+}
+
+type Mutation {
+  createEnumeration(input: UpdateEnumerationInput!): Enumeration
+  updateEnumeration(input: UpdateEnumerationInput!): Enumeration
 }

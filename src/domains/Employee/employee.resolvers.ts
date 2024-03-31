@@ -5,12 +5,12 @@ import type { Context } from '../../plugins/graphql'
 
 export default {
   Query: {
-    employee: async (_: any, p: QueryEmployeeArgs, ctx: Context) => {
-      if (!p._id) {
+    employee: async (_: any, { id }: QueryEmployeeArgs, ctx: Context) => {
+      if (!id) {
         return SevenBoom.badRequest('Employee id is required')
       }
 
-      const employee = await ctx.sequelize.models.employee.findByPk(p._id)
+      const employee = await ctx.sequelize.models.employee.findByPk(id)
 
       if (!employee) {
         return SevenBoom.notFound('Employee not found')
@@ -19,6 +19,8 @@ export default {
       return employee
     },
     employees: async (_: any, { input }: QueryEmployeesArgs, ctx: Context) => {
+      if (!input) return SevenBoom.badRequest('Query input is required')
+
       const { q = '', limit = 10, offset = 0 } = input
 
       const { count, rows } = await ctx.sequelize.models.employee.findAndCountAll({
@@ -41,9 +43,9 @@ export default {
         return SevenBoom.badRequest('Employee data is required')
       }
 
-      const res = await ctx.sequelize.models.employee.create({ ...input })
+      const employee = await ctx.sequelize.models.employee.create({ ...input })
 
-      return { data: res.toJSON() }
+      return employee
     }
   }
 }

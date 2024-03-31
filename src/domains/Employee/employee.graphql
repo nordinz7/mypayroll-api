@@ -1,5 +1,5 @@
 type Employee {
-  id: Int
+  id: Int!
   name: String!
   birthDate: DateTime!
   nationality: String!
@@ -13,10 +13,14 @@ type Employee {
   spouseOccupation: String
   children: Int
 
-  enumeration: Enumeration
-
+  joinDate: DateTime!
+  endDate: DateTime
   phone: String
   email: String
+
+  enumerationId: Int
+  enumeration: Enumeration
+
   createdAt: String!
   updatedAt: String!
 }
@@ -71,10 +75,10 @@ input EmployeesQueryInput {
 }
 
 type Query {
-  employee(_id: ID!): Employee
+  employee(id: Int!): Employee
   employees(input: EmployeesQueryInput): Employees
 }
 
 type Mutation {
-  createEmployee(input: CreateEmployeeInput): Response
+  createEmployee(input: CreateEmployeeInput): Employee
 }
