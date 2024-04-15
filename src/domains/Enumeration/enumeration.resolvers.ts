@@ -1,5 +1,5 @@
 import { SevenBoom } from 'graphql-apollo-errors'
-import type { Employee, MutationCreateEnumerationArgs, MutationUpdateEnumerationArgs, QueryEnumerationArgs } from '../../types'
+import type { MutationCreateEnumerationArgs, MutationUpdateEnumerationArgs, QueryEnumerationArgs } from '../../types'
 import type { Context } from '../../plugins/graphql'
 
 export default {
@@ -22,44 +22,53 @@ export default {
     createEnumeration: async (_: any, { input }: MutationCreateEnumerationArgs, ctx: Context) => {
       const { basicSalary, employeeId, compensationItems } = input
 
-      const employee = await ctx.sequelize.models.employee.findByPk(employeeId, { include: ctx.sequelize.models.enumerations })
+      try {
+        const enumeration = await ctx.sequelize.transaction(async (transaction) => {
+          const employee = await ctx.sequelize.models.employee.findByPk(employeeId, { include: ctx.sequelize.models.enumerations, raw: true, transaction })
 
-      if (!employee) {
-        return SevenBoom.notFound('Employee not found')
+          if (!employee) {
+            return SevenBoom.notFound('Employee not found')
+          }
+
+          if (employee.enumerationId) {
+            return SevenBoom.conflict('Cannot Create: Enumeration already exists, Please update it instead.')
+          }
+
+          const enumeration = await ctx.sequelize.models.enumeration.create({ basicSalary, employeeId, compensationItems }, { transaction })
+
+          await ctx.sequelize.models.employee.update({ enumerationId: enumeration.toJSON().id }, { where: { id: employeeId }, transaction })
+
+          return enumeration
+        })
+
+        return enumeration
+      } catch (error) {
+        return SevenBoom.badImplementation(error.message)
       }
-
-      if (employee.enumeration) {
-        return SevenBoom.conflict('Enumeration already exists')
-      }
-
-      const enumeration = await employee.createEnumeration({
-        basicSalary,
-        employeeId,
-        compensationItems
-      })
-
-      return enumeration
     },
     updateEnumeration: async (_: any, { input }: MutationUpdateEnumerationArgs, ctx: Context) => {
       const { basicSalary, employeeId, compensationItems } = input
 
-      const employee = await ctx.sequelize.models.employee.findByPk(employeeId, { include: ctx.sequelize.models.enumerations })
+      try {
+        const updatedEnumeration = await ctx.sequelize.transaction(async (transaction) => {
+          const employee = await ctx.sequelize.models.employee.findByPk(employeeId, { include: ctx.sequelize.models.enumeration, raw: true, transaction })
 
-      if (!employee) {
-        return SevenBoom.notFound('Employee not found')
+          if (!employee) {
+            return SevenBoom.notFound('Employee not found')
+          }
+
+          if (!employee.enumerationId) {
+            return SevenBoom.notFound('Enumeration not found')
+          }
+
+          const [count, updated] = await ctx.sequelize.models.enumeration.update({ basicSalary, compensationItems }, { where: { id: employee.enumerationId }, returning: true, raw: true, transaction })
+
+          return updated[0]
+        })
+        return updatedEnumeration
+      } catch (error) {
+        return SevenBoom.badImplementation(error.message)
       }
-
-      if (!employee.enumeration) {
-        return SevenBoom.notFound('Enumeration not found')
-      }
-
-      const enumeration = await employee.updateEnumeration({
-        basicSalary,
-        employeeId,
-        compensationItems
-      })
-
-      return enumeration
     }
   }
 }

@@ -20,6 +20,7 @@ export default (sequelize: Sequelize) => {
     graphiql: true,
     context: {
       sequelize
-    }
+    },
+    maskedErrors: config.NODE_ENV === 'production'
   })
 }
