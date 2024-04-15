@@ -9,7 +9,8 @@
     "watch:ts": "tsc -w",
     "lint": "eslint --ext .ts src/",
     "lint:fix": "eslint --ext .ts --fix src/",
-    "generate-types": "graphql-code-generator --config codegen.ts"
+    "generate-types": "graphql-code-generator --config codegen.ts",
+    "test": "bun test --coverage"
   },
   "dependencies": {
     "graphql-apollo-errors": "^2.0.3",
