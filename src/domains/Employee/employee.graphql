@@ -62,10 +62,24 @@ enum EducationLevel {
   PHD
 }
 
-input CreateEmployeeInput {
+input EmployeeInput {
   name: String!
   birthDate: DateTime!
   nationality: String!
+  religion: Religion
+  race: Race
+  martialStatus: MartialStatus!
+  qualification: String
+  educationLevel: EducationLevel
+
+  spouseName: String
+  spouseOccupation: String
+  children: Int
+
+  joinDate: DateTime!
+  endDate: DateTime
+  phone: String
+  email: String
 }
 
 input EmployeesQueryInput {
@@ -80,5 +94,6 @@ type Query {
 }
 
 type Mutation {
-  createEmployee(input: CreateEmployeeInput): Employee
+  createEmployee(input: EmployeeInput): Employee
+  updateEmployee(id: Int, input: EmployeeInput): Employee
 }

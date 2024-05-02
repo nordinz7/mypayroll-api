@@ -38,12 +38,6 @@ export type CreateCompensationItemInput = {
   startDate: Scalars['String']['input'];
 };
 
-export type CreateEmployeeInput = {
-  birthDate: Scalars['DateTime']['input'];
-  name: Scalars['String']['input'];
-  nationality: Scalars['String']['input'];
-};
-
 export enum EducationLevel {
   Degree = 'DEGREE',
   Diploma = 'DIPLOMA',
@@ -76,6 +70,24 @@ export type Employee = {
   spouseName?: Maybe<Scalars['String']['output']>;
   spouseOccupation?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['String']['output'];
+};
+
+export type EmployeeInput = {
+  birthDate: Scalars['DateTime']['input'];
+  children?: InputMaybe<Scalars['Int']['input']>;
+  educationLevel?: InputMaybe<EducationLevel>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  joinDate: Scalars['DateTime']['input'];
+  martialStatus: MartialStatus;
+  name: Scalars['String']['input'];
+  nationality: Scalars['String']['input'];
+  phone?: InputMaybe<Scalars['String']['input']>;
+  qualification?: InputMaybe<Scalars['String']['input']>;
+  race?: InputMaybe<Race>;
+  religion?: InputMaybe<Religion>;
+  spouseName?: InputMaybe<Scalars['String']['input']>;
+  spouseOccupation?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Employees = {
@@ -118,6 +130,7 @@ export type Mutation = {
   register?: Maybe<Response>;
   resendVerificationEmail?: Maybe<Response>;
   resetPassword?: Maybe<Response>;
+  updateEmployee?: Maybe<Employee>;
   updateEnumeration?: Maybe<Enumeration>;
   verifyEmail?: Maybe<Response>;
 };
@@ -130,7 +143,7 @@ export type MutationChangePasswordArgs = {
 
 
 export type MutationCreateEmployeeArgs = {
-  input?: InputMaybe<CreateEmployeeInput>;
+  input?: InputMaybe<EmployeeInput>;
 };
 
 
@@ -158,6 +171,12 @@ export type MutationRegisterArgs = {
 export type MutationResetPasswordArgs = {
   password: Scalars['String']['input'];
   token: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateEmployeeArgs = {
+  id?: InputMaybe<Scalars['Int']['input']>;
+  input?: InputMaybe<EmployeeInput>;
 };
 
 
@@ -332,10 +351,10 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CompensationItem: ResolverTypeWrapper<CompensationItem>;
   CreateCompensationItemInput: CreateCompensationItemInput;
-  CreateEmployeeInput: CreateEmployeeInput;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   EducationLevel: EducationLevel;
   Employee: ResolverTypeWrapper<Employee>;
+  EmployeeInput: EmployeeInput;
   Employees: ResolverTypeWrapper<Employees>;
   EmployeesQueryInput: EmployeesQueryInput;
   Enumeration: ResolverTypeWrapper<Enumeration>;
@@ -362,9 +381,9 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   CompensationItem: CompensationItem;
   CreateCompensationItemInput: CreateCompensationItemInput;
-  CreateEmployeeInput: CreateEmployeeInput;
   DateTime: Scalars['DateTime']['output'];
   Employee: Employee;
+  EmployeeInput: EmployeeInput;
   Employees: Employees;
   EmployeesQueryInput: EmployeesQueryInput;
   Enumeration: Enumeration;
@@ -454,6 +473,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   register?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, Partial<MutationRegisterArgs>>;
   resendVerificationEmail?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType>;
   resetPassword?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'password' | 'token'>>;
+  updateEmployee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType, Partial<MutationUpdateEmployeeArgs>>;
   updateEnumeration?: Resolver<Maybe<ResolversTypes['Enumeration']>, ParentType, ContextType, RequireFields<MutationUpdateEnumerationArgs, 'input'>>;
   verifyEmail?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationVerifyEmailArgs, 'token'>>;
 };

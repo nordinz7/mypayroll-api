@@ -1,7 +1,8 @@
 import { SevenBoom } from 'graphql-apollo-errors'
-import type { MutationCreateEmployeeArgs, QueryEmployeeArgs, QueryEmployeesArgs } from '../../types'
+import type { MutationCreateEmployeeArgs, MutationUpdateEmployeeArgs, QueryEmployeeArgs, QueryEmployeesArgs } from '../../types'
 import { Op } from 'sequelize'
 import type { Context } from '../../plugins/graphql'
+import { validateEmployee } from './helper'
 
 export default {
   Query: {
@@ -39,13 +40,22 @@ export default {
   },
   Mutation: {
     createEmployee: async (_: any, { input }: MutationCreateEmployeeArgs, ctx: Context) => {
-      if (!input) {
-        return SevenBoom.badRequest('Employee data is required')
+      const dataInput = validateEmployee(input)
+
+      return ctx.sequelize.models.employee.create({ ...dataInput })
+    },
+    updateEmployee: async (_: any, { id, input }: MutationUpdateEmployeeArgs, ctx: Context) => {
+      if (!id) return SevenBoom.badRequest('Employee id is required')
+
+      const dataInput = validateEmployee(input)
+
+      const employee = await ctx.sequelize.models.employee.findByPk(id)
+
+      if (!employee) {
+        return SevenBoom.notFound('Employee not found')
       }
 
-      const employee = await ctx.sequelize.models.employee.create({ ...input })
-
-      return employee
+      return employee?.update({ ...dataInput }, { where: { id } })
     }
   }
 }

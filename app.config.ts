@@ -1,5 +1,5 @@
 export const config = {
-  PORT: Bun.env.PORT || 3000,
+  PORT: Bun.env.PORT || 8000,
   HOSTNAME: Bun.env.HOSTNAME || 'localhost',
   NODE_ENV: Bun.env.NODE_ENV || 'development',
   SECRET_KEY: Bun.env.SECRET_KEY || 'secret',
@@ -7,5 +7,5 @@ export const config = {
   POSTGRES_USER: Bun.env.POSTGRES_USER || 'postgres',
   POSTGRES_PASSWORD: Bun.env.POSTGRES_PASSWORD || 'postgres',
   POSTGRES_HOST: Bun.env.POSTGRES_HOST || 'localhost',
-  POSTGRES_PORT: Bun.env.POSTGRES_PORT || 5432,
+  POSTGRES_PORT: Bun.env.POSTGRES_PORT || 5432
 }
