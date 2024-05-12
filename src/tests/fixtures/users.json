@@ -1,0 +1,23 @@
+[
+  {
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "password": "password123",
+    "confirmPassword": "password123"
+  },
+  {
+    "uuid": "123e4567-e89b-12d3-a456-426614174001",
+    "name": "Jane Doe",
+    "email": "jane.doe@example.com",
+    "password": "password456",
+    "confirmPassword": "password456"
+  },
+  {
+    "uuid": "123e4567-e89b-12d3-a456-426614174002",
+    "name": "Bob Smith",
+    "email": "bob.smith@example.com",
+    "password": "password789",
+    "confirmPassword": "password789"
+  }
+]

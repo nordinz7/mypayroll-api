@@ -1,4 +1,4 @@
-import JWT, { type Secret, type SignOptions } from 'jsonwebtoken'
+import JWT from 'jsonwebtoken'
 
 export const signJWT = async (payload: string | Buffer | object) => {
   const cert = await Bun.file('../../cert/public_key.pem').text()

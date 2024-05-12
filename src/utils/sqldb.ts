@@ -12,10 +12,16 @@ export const DbSingletonSql = (function () {
         return instance
       }
 
-      const sequelize = new Sequelize(config.POSTGRES_DB, config.POSTGRES_USER, config.POSTGRES_PASSWORD, {
-        host: config.POSTGRES_HOST,
-        dialect: 'postgres'
-      })
+      const sequelize = new Sequelize(
+        config.NODE_ENV === 'test' ? config.POSTGRES_DB_TEST : config.POSTGRES_DB,
+        config.POSTGRES_USER,
+        config.POSTGRES_PASSWORD,
+        {
+          host: config.POSTGRES_HOST,
+          dialect: 'postgres',
+          logging: config.NODE_ENV === 'development'
+        }
+      )
 
       try {
         await sequelize.authenticate()

@@ -83,7 +83,7 @@ export const createUser = async (input: CreateUserInput, ctx: Context) => {
 
   const user = await ctx.sequelize.models.user.create({ ...value })
 
-  return user
+  return user.dataValues
 }
 
 export const updateUser = async (input: CreateUserInput, ctx: Context) => {
@@ -97,19 +97,19 @@ export const updateUser = async (input: CreateUserInput, ctx: Context) => {
     throw SevenBoom.notFound('User not found')
   }
 
-  return user.update({ ...value })
+  return (await user.update({ ...value })).dataValues
 }
 
 export const deleteUser = async (uuid: string, ctx: Context) => {
   const user = await getUser(uuid, ctx)
 
-  return user.update({ status: ActiveStatus.Deleted })
+  return (await user.update({ status: ActiveStatus.Deleted })).dataValues
 }
 
 export const unDeleteUser = async (uuid: string, ctx: Context) => {
   const user = await getUser(uuid, ctx)
 
-  return user.update({ status: ActiveStatus.Active })
+  return (await user.update({ status: ActiveStatus.Active })).dataValues
 }
 
 export const signIn = async (input: SignInInput, ctx: Context) => {

@@ -4,6 +4,7 @@ export const config = {
   NODE_ENV: Bun.env.NODE_ENV || 'development',
   SECRET_KEY: Bun.env.SECRET_KEY || 'secret',
   POSTGRES_DB: Bun.env.POSTGRES_DB || 'payroll',
+  POSTGRES_DB_TEST: Bun.env.POSTGRES_DB_TEST || 'payroll-test',
   POSTGRES_USER: Bun.env.POSTGRES_USER || 'postgres',
   POSTGRES_PASSWORD: Bun.env.POSTGRES_PASSWORD || 'postgres',
   POSTGRES_HOST: Bun.env.POSTGRES_HOST || 'localhost',

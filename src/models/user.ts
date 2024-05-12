@@ -1,4 +1,5 @@
 import { DataTypes, type Sequelize } from 'sequelize'
+import { ActiveStatus } from '../types'
 
 export default (sequelize: Sequelize) => sequelize.define('user', {
   uuid: {
@@ -17,6 +18,11 @@ export default (sequelize: Sequelize) => sequelize.define('user', {
   password: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  status: {
+    type: DataTypes.ENUM(ActiveStatus.Active, ActiveStatus.Deleted),
+    allowNull: false,
+    defaultValue: ActiveStatus.Active
   },
   createdAt: {
     type: DataTypes.DATE,

@@ -9,7 +9,7 @@ export const validateUserInput = (input: CreateUserInput) => {
     email: Joi.string().email().required(),
     password: Joi.string().required(),
     confirmPassword: Joi.string().required(),
-    status: Joi.string().valid(Object.values(ActiveStatus)).default(ActiveStatus.Active)
+    status: Joi.string().valid(...Object.values(ActiveStatus)).default(ActiveStatus.Active)
   })
 
   const { error, value } = createUserSchema.validate(input)
