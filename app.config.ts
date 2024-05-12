@@ -7,5 +7,6 @@ export const config = {
   POSTGRES_USER: Bun.env.POSTGRES_USER || 'postgres',
   POSTGRES_PASSWORD: Bun.env.POSTGRES_PASSWORD || 'postgres',
   POSTGRES_HOST: Bun.env.POSTGRES_HOST || 'localhost',
-  POSTGRES_PORT: Bun.env.POSTGRES_PORT || 5432
+  POSTGRES_PORT: Bun.env.POSTGRES_PORT || 5432,
+  JWT_SECRET_PASSPHRASE: Bun.env.JWT_SECRET_PASSPHRASE || '12345t'
 }

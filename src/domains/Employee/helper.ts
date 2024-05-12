@@ -1,27 +1,31 @@
-import { z } from 'zod'
+import Joi from 'joi'
 import { EducationLevel, MartialStatus, Race, Religion, type EmployeeInput } from '../../types'
 import { SevenBoom } from 'graphql-apollo-errors'
 
 export const validateEmployee = (input: EmployeeInput | undefined | null): EmployeeInput => {
   if (!input) throw SevenBoom.badData('Employee input is required')
 
-  const schema = z.object({
-    name: z.string().min(3).max(255),
-    birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-    nationality: z.string().min(3).max(255),
-    religion: z.nativeEnum(Religion),
-    race: z.nativeEnum(Race),
-    martialStatus: z.nativeEnum(MartialStatus).default(MartialStatus.Single),
-    qualification: z.string().min(3).max(255).optional(),
-    educationLevel: z.nativeEnum(EducationLevel),
-    spouseName: z.string().min(3).max(255).optional(),
-    spouseOccupation: z.string().min(3).max(255).optional(),
-    children: z.number().int().optional().default(0),
-    joinDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-    endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-    phone: z.string().min(3).max(255).optional(),
-    email: z.string().email().optional()
+  const schema = Joi.object({
+    name: Joi.string().min(3).max(255),
+    birthDate: Joi.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    nationality: Joi.string().min(3).max(255),
+    religion: Joi.valid(Object.values(Religion)),
+    race: Joi.valid(Object.values(Race)),
+    martialStatus: Joi.valid(Object.values(MartialStatus)).default(MartialStatus.Single),
+    qualification: Joi.string().min(3).max(255).optional(),
+    educationLevel: Joi.valid(Object.values(EducationLevel)),
+    spouseName: Joi.string().min(3).max(255).optional(),
+    spouseOccupation: Joi.string().min(3).max(255).optional(),
+    children: Joi.number().optional().default(0),
+    JoinDate: Joi.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    endDate: Joi.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    phone: Joi.string().min(3).max(255).optional(),
+    email: Joi.string().email().optional()
   })
 
-  return schema.parse(input)
+  const { error, value } = schema.validate(input)
+
+  if (error) throw SevenBoom.badData(error.message)
+
+  return value
 }

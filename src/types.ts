@@ -16,7 +16,13 @@ export type Scalars = {
   Float: { input: number; output: number; }
   DateTime: { input: any; output: any; }
   JSON: { input: any; output: any; }
+  UUID: { input: any; output: any; }
 };
+
+export enum ActiveStatus {
+  Active = 'ACTIVE',
+  Deleted = 'DELETED'
+}
 
 export type CompensationItem = {
   __typename?: 'CompensationItem';
@@ -36,6 +42,14 @@ export type CreateCompensationItemInput = {
   endDate?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   startDate: Scalars['String']['input'];
+};
+
+export type CreateUserInput = {
+  confirmPassword: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  uuid?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export enum EducationLevel {
@@ -121,24 +135,16 @@ export enum MartialStatus {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  changePassword?: Maybe<Response>;
   createEmployee?: Maybe<Employee>;
   createEnumeration?: Maybe<Enumeration>;
-  forgotPassword?: Maybe<Response>;
-  login?: Maybe<Response>;
-  logout?: Maybe<Response>;
-  register?: Maybe<Response>;
-  resendVerificationEmail?: Maybe<Response>;
+  createUser?: Maybe<User>;
+  deleteUser?: Maybe<User>;
   resetPassword?: Maybe<Response>;
+  signIn?: Maybe<Token>;
+  unDeleteUser?: Maybe<User>;
   updateEmployee?: Maybe<Employee>;
   updateEnumeration?: Maybe<Enumeration>;
-  verifyEmail?: Maybe<Response>;
-};
-
-
-export type MutationChangePasswordArgs = {
-  newPassword: Scalars['String']['input'];
-  oldPassword: Scalars['String']['input'];
+  updateUser?: Maybe<User>;
 };
 
 
@@ -152,25 +158,28 @@ export type MutationCreateEnumerationArgs = {
 };
 
 
-export type MutationForgotPasswordArgs = {
-  email: Scalars['String']['input'];
+export type MutationCreateUserArgs = {
+  input?: InputMaybe<CreateUserInput>;
 };
 
 
-export type MutationLoginArgs = {
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-};
-
-
-export type MutationRegisterArgs = {
-  input?: InputMaybe<RegisterInput>;
+export type MutationDeleteUserArgs = {
+  uuid?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 
 export type MutationResetPasswordArgs = {
-  password: Scalars['String']['input'];
-  token: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+};
+
+
+export type MutationSignInArgs = {
+  input?: InputMaybe<SignInInput>;
+};
+
+
+export type MutationUnDeleteUserArgs = {
+  uuid?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 
@@ -185,8 +194,8 @@ export type MutationUpdateEnumerationArgs = {
 };
 
 
-export type MutationVerifyEmailArgs = {
-  token: Scalars['String']['input'];
+export type MutationUpdateUserArgs = {
+  input?: InputMaybe<CreateUserInput>;
 };
 
 export type Query = {
@@ -195,6 +204,7 @@ export type Query = {
   employees?: Maybe<Employees>;
   enumeration?: Maybe<Enumeration>;
   user: User;
+  users?: Maybe<Users>;
 };
 
 
@@ -214,7 +224,12 @@ export type QueryEnumerationArgs = {
 
 
 export type QueryUserArgs = {
-  _id: Scalars['ID']['input'];
+  uuid?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+
+export type QueryUsersArgs = {
+  input?: InputMaybe<UserQueryInput>;
 };
 
 export enum Race {
@@ -223,15 +238,6 @@ export enum Race {
   Malay = 'MALAY',
   Other = 'OTHER'
 }
-
-export type RegisterInput = {
-  birthDate: Scalars['String']['input'];
-  confirmPassword: Scalars['String']['input'];
-  email: Scalars['String']['input'];
-  name: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-  username: Scalars['String']['input'];
-};
 
 export enum Religion {
   Buddha = 'BUDDHA',
@@ -248,10 +254,20 @@ export type Response = {
   success?: Maybe<Scalars['Boolean']['output']>;
 };
 
+export type SignInInput = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
 export type TimeStamp = {
   __typename?: 'TimeStamp';
   createdAt: Scalars['DateTime']['output'];
   updatedAt: Scalars['DateTime']['output'];
+};
+
+export type Token = {
+  __typename?: 'Token';
+  jwt?: Maybe<Scalars['String']['output']>;
 };
 
 export type UpdateEnumerationInput = {
@@ -262,12 +278,27 @@ export type UpdateEnumerationInput = {
 
 export type User = {
   __typename?: 'User';
-  _id: Scalars['ID']['output'];
   createdAt: Scalars['String']['output'];
   email: Scalars['String']['output'];
   name: Scalars['String']['output'];
   password: Scalars['String']['output'];
+  status: ActiveStatus;
   updatedAt: Scalars['String']['output'];
+  uuid?: Maybe<Scalars['UUID']['output']>;
+};
+
+export type UserQueryInput = {
+  email?: InputMaybe<Scalars['String']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  q?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Users = {
+  __typename?: 'Users';
+  pageInfo?: Maybe<NumberPagination>;
+  rows?: Maybe<Array<Maybe<User>>>;
 };
 
 export type NumberPagination = {
@@ -348,9 +379,11 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  ActiveStatus: ActiveStatus;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CompensationItem: ResolverTypeWrapper<CompensationItem>;
   CreateCompensationItemInput: CreateCompensationItemInput;
+  CreateUserInput: CreateUserInput;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   EducationLevel: EducationLevel;
   Employee: ResolverTypeWrapper<Employee>;
@@ -359,20 +392,23 @@ export type ResolversTypes = {
   EmployeesQueryInput: EmployeesQueryInput;
   Enumeration: ResolverTypeWrapper<Enumeration>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
-  ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   JSON: ResolverTypeWrapper<Scalars['JSON']['output']>;
   MartialStatus: MartialStatus;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   Race: Race;
-  RegisterInput: RegisterInput;
   Religion: Religion;
   Response: ResolverTypeWrapper<Response>;
+  SignInInput: SignInInput;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   TimeStamp: ResolverTypeWrapper<TimeStamp>;
+  Token: ResolverTypeWrapper<Token>;
+  UUID: ResolverTypeWrapper<Scalars['UUID']['output']>;
   UpdateEnumerationInput: UpdateEnumerationInput;
   User: ResolverTypeWrapper<User>;
+  UserQueryInput: UserQueryInput;
+  Users: ResolverTypeWrapper<Users>;
   numberPagination: ResolverTypeWrapper<NumberPagination>;
 };
 
@@ -381,6 +417,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   CompensationItem: CompensationItem;
   CreateCompensationItemInput: CreateCompensationItemInput;
+  CreateUserInput: CreateUserInput;
   DateTime: Scalars['DateTime']['output'];
   Employee: Employee;
   EmployeeInput: EmployeeInput;
@@ -388,17 +425,20 @@ export type ResolversParentTypes = {
   EmployeesQueryInput: EmployeesQueryInput;
   Enumeration: Enumeration;
   Float: Scalars['Float']['output'];
-  ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   JSON: Scalars['JSON']['output'];
   Mutation: {};
   Query: {};
-  RegisterInput: RegisterInput;
   Response: Response;
+  SignInInput: SignInInput;
   String: Scalars['String']['output'];
   TimeStamp: TimeStamp;
+  Token: Token;
+  UUID: Scalars['UUID']['output'];
   UpdateEnumerationInput: UpdateEnumerationInput;
   User: User;
+  UserQueryInput: UserQueryInput;
+  Users: Users;
   numberPagination: NumberPagination;
 };
 
@@ -464,25 +504,24 @@ export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  changePassword?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationChangePasswordArgs, 'newPassword' | 'oldPassword'>>;
   createEmployee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType, Partial<MutationCreateEmployeeArgs>>;
   createEnumeration?: Resolver<Maybe<ResolversTypes['Enumeration']>, ParentType, ContextType, RequireFields<MutationCreateEnumerationArgs, 'input'>>;
-  forgotPassword?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationForgotPasswordArgs, 'email'>>;
-  login?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
-  logout?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType>;
-  register?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, Partial<MutationRegisterArgs>>;
-  resendVerificationEmail?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType>;
-  resetPassword?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'password' | 'token'>>;
+  createUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<MutationCreateUserArgs>>;
+  deleteUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<MutationDeleteUserArgs>>;
+  resetPassword?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'email'>>;
+  signIn?: Resolver<Maybe<ResolversTypes['Token']>, ParentType, ContextType, Partial<MutationSignInArgs>>;
+  unDeleteUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<MutationUnDeleteUserArgs>>;
   updateEmployee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType, Partial<MutationUpdateEmployeeArgs>>;
   updateEnumeration?: Resolver<Maybe<ResolversTypes['Enumeration']>, ParentType, ContextType, RequireFields<MutationUpdateEnumerationArgs, 'input'>>;
-  verifyEmail?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationVerifyEmailArgs, 'token'>>;
+  updateUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<MutationUpdateUserArgs>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   employee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType, RequireFields<QueryEmployeeArgs, 'id'>>;
   employees?: Resolver<Maybe<ResolversTypes['Employees']>, ParentType, ContextType, Partial<QueryEmployeesArgs>>;
   enumeration?: Resolver<Maybe<ResolversTypes['Enumeration']>, ParentType, ContextType, RequireFields<QueryEnumerationArgs, 'id'>>;
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, '_id'>>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType, Partial<QueryUserArgs>>;
+  users?: Resolver<Maybe<ResolversTypes['Users']>, ParentType, ContextType, Partial<QueryUsersArgs>>;
 };
 
 export type ResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['Response'] = ResolversParentTypes['Response']> = {
@@ -498,13 +537,29 @@ export type TimeStampResolvers<ContextType = any, ParentType extends ResolversPa
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TokenResolvers<ContextType = any, ParentType extends ResolversParentTypes['Token'] = ResolversParentTypes['Token']> = {
+  jwt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export interface UuidScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['UUID'], any> {
+  name: 'UUID';
+}
+
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
-  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['ActiveStatus'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  uuid?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UsersResolvers<ContextType = any, ParentType extends ResolversParentTypes['Users'] = ResolversParentTypes['Users']> = {
+  pageInfo?: Resolver<Maybe<ResolversTypes['numberPagination']>, ParentType, ContextType>;
+  rows?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -526,7 +581,10 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Response?: ResponseResolvers<ContextType>;
   TimeStamp?: TimeStampResolvers<ContextType>;
+  Token?: TokenResolvers<ContextType>;
+  UUID?: GraphQLScalarType;
   User?: UserResolvers<ContextType>;
+  Users?: UsersResolvers<ContextType>;
   numberPagination?: NumberPaginationResolvers<ContextType>;
 };
 
