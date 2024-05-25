@@ -12,9 +12,7 @@ export type ServerInstance = {
 let serverInstance:ServerInstance['server']
 let dbInstance:ServerInstance['db']
 
-export const startServer = async (isTestEnvironment = false): Promise<ServerInstance> => {
-  if (isTestEnvironment) config.NODE_ENV = 'test'
-
+export const startServer = async (): Promise<ServerInstance> => {
   if (!dbInstance) {
     dbInstance = await DbSingletonSql.getInstance()
   }
