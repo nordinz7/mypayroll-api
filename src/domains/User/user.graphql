@@ -19,8 +19,6 @@ type Token {
 
 input UserQueryInput {
   q: String
-  name: String
-  email: String
   limit: Int
   offset: Int
 }

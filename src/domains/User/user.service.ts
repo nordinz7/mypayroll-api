@@ -24,9 +24,7 @@ export const getUsers = async (input: UserQueryInput, ctx: Context) => {
   const usersSchema = Joi.object({
     limit: Joi.number().default(10),
     offset: Joi.number().default(0),
-    name: Joi.string().optional(),
-    email: Joi.string().email().optional(),
-    q: Joi.string().optional()
+    q: Joi.string().optional().allow('')
   })
 
   const { error, value } = usersSchema.validate(input)
@@ -35,22 +33,16 @@ export const getUsers = async (input: UserQueryInput, ctx: Context) => {
     throw SevenBoom.badRequest(error.message)
   }
 
-  const { limit, offset, name, email, q } = value
+  const { limit, offset, q } = value
 
-  const query = q.trim()
+  const query = q?.trim()
 
-  const where: any = {
-    [Op.or]: [
-      {
-        name: {
-          [Op.like]: `%${query}%`
-        }
-      },
-      {
-        email: {
-          [Op.like]: `%${query}%`
-        }
-      }
+  const where: any = {}
+
+  if (query) {
+    where[Op.or] = [
+      { name: { [Op.like]: `%${query}%` } },
+      { email: { [Op.like]: `%${query}%` } }
     ]
   }
 
