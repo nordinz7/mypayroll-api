@@ -1,22 +1,19 @@
+import { startServer, type ServerInstance } from '..'
 import { beforeAll, afterAll } from 'bun:test'
-import { startServer } from '..'
-import { DbSingletonSql } from '../utils/sqldb'
 
-export const startSetup = async () => {
-  beforeAll(async () => {
-    console.log('--------steup test')
-    // global setup
-    await startServer(true)
+let serverInstance: ServerInstance
 
-    // empty the database
-    const db = await DbSingletonSql.getInstance()
+const beforeAllTest = async () => {
+  serverInstance = await startServer(true)
 
-    await db.drop()
-    await db.sync({ force: true })
-  })
-
-  afterAll(async () => {
-  // global teardown
-    await DbSingletonSql.getInstance().then((db) => db.close())
-  })
+  await serverInstance.db.drop()
+  await serverInstance.db.sync({ force: true })
 }
+
+const afterAllTest = async () => {
+  await serverInstance.server.stop()
+  await serverInstance.db.close()
+}
+
+beforeAll(beforeAllTest)
+afterAll(afterAllTest)

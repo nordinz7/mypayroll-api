@@ -5,7 +5,7 @@ type User {
   password: String!
   createdAt: String!
   updatedAt: String!
-  status: ActiveStatus!
+  status: ActiveStatus
 }
 
 type Users {

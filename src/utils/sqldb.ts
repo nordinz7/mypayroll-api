@@ -19,7 +19,7 @@ export const DbSingletonSql = (function () {
         {
           host: config.POSTGRES_HOST,
           dialect: 'postgres',
-          logging: config.NODE_ENV === 'development'
+          logging: config.NODE_ENV === 'development' ? console.log : false
         }
       )
 

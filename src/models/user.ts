@@ -19,11 +19,11 @@ export default (sequelize: Sequelize) => sequelize.define('user', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  status: {
-    type: DataTypes.ENUM(ActiveStatus.Active, ActiveStatus.Deleted),
-    allowNull: false,
-    defaultValue: ActiveStatus.Active
-  },
+  // status: {
+  //   type: DataTypes.ENUM(ActiveStatus.Active, ActiveStatus.Deleted),
+  //   allowNull: false,
+  //   defaultValue: ActiveStatus.Active
+  // },
   createdAt: {
     type: DataTypes.DATE,
     allowNull: false

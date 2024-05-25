@@ -10,7 +10,8 @@
     "lint": "eslint --ext .ts src/",
     "lint:fix": "eslint --ext .ts --fix src/",
     "generate-types": "graphql-code-generator --config codegen.ts",
-    "test": "bun test --watch --coverage --preload src/tests/setup.ts"
+    "test": "bun test --coverage --watch",
+    "test:single": "bun test --watch ./src/tests/files/user.test.ts"
   },
   "dependencies": {
     "graphql-apollo-errors": "^2.0.3",
