@@ -4,7 +4,7 @@ import { beforeAll, afterAll } from 'bun:test'
 let serverInstance: ServerInstance
 
 const beforeAllTest = async () => {
-  serverInstance = await startServer(true)
+  serverInstance = await startServer()
 
   await serverInstance.db.drop()
   await serverInstance.db.sync({ force: true })
