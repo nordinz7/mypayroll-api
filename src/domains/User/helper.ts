@@ -1,10 +1,11 @@
 import { SevenBoom } from 'graphql-apollo-errors'
 import Joi from 'joi'
 import { ActiveStatus, type CreateUserInput } from '../../types'
+import { v4 as uuidV4 } from 'uuid'
 
 export const validateUserInput = (input: CreateUserInput) => {
   const createUserSchema = Joi.object({
-    uuid: Joi.string().uuid().required(),
+    uuid: Joi.string().uuid().default(uuidV4()),
     name: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string().required(),

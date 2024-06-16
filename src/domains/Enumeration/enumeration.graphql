@@ -10,7 +10,6 @@ type Enumeration {
 type CompensationItem {
   id: Int!
   enumerationId: Int
-  employeeId: Int
   name: String!
   amount: Float!
   startDate: String!
@@ -27,7 +26,7 @@ input CreateCompensationItemInput {
 }
 
 input UpdateEnumerationInput {
-  employeeId: Int!
+  enumerationId: Int!
   basicSalary: Float!
   compensationItems: [CreateCompensationItemInput]
 }

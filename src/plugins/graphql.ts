@@ -1,12 +1,33 @@
-import { createYoga, createSchema } from 'graphql-yoga'
+import { createYoga, createSchema, type YogaInitialContext } from 'graphql-yoga'
 import { loadFilesSync } from '@graphql-tools/load-files'
 import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge'
 import path from 'path'
 import { config } from '../../app.config'
 import type { Sequelize } from 'sequelize'
+import type { User } from '../types'
+import { decodeJWT } from '../utils/auth'
 
 export type Context = {
   sequelize: Sequelize
+  user?: User
+}
+
+const injectCtx = async ({ request }: YogaInitialContext) => {
+  const obj = {}
+  const { headers } = request // @ts-ignore
+  const authHeader = headers?.authorization || ''
+  const token = authHeader.split(' ')[1]
+
+  if (!token) {
+    return obj
+  }
+
+  const decoded = await decodeJWT(token, true)
+  console.log('--------decoded', decoded)
+  return {
+    ...obj,
+    user: decoded
+  }
 }
 
 export default (sequelize: Sequelize) => {
@@ -18,8 +39,8 @@ export default (sequelize: Sequelize) => {
   return createYoga({
     schema: createSchema({ typeDefs, resolvers }),
     graphiql: true,
-    context: {
-      sequelize
+    context: (initialContext: YogaInitialContext) => {
+      return { sequelize, ...injectCtx(initialContext) }
     },
     maskedErrors: config.NODE_ENV === 'production'
   })

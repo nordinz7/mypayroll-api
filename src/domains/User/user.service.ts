@@ -58,14 +58,11 @@ export const getUsers = async (input: UserQueryInput, ctx: Context) => {
 export const createUser = async (input: CreateUserInput, ctx: Context) => {
   const value = validateUserInput(input)
 
-  const { uuid, email } = value
+  const { email } = value
 
   const userExists = await ctx.sequelize.models.user.findOne({
     where: {
-      [Op.or]: [
-        { email },
-        { uuid }
-      ]
+      email
     }
   })
 
