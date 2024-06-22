@@ -6,7 +6,7 @@ import { config } from '../../app.config'
 import type { Sequelize } from 'sequelize'
 import type { User } from '../types'
 import { decodeJWT } from '../utils/auth'
-import { useJWT } from '@graphql-yoga/plugin-jwt'
+import { useAuth } from './useAuth'
 
 export type Context = {
   sequelize: Sequelize
@@ -19,7 +19,7 @@ const injectCtx = async ({ request }: YogaInitialContext) => {
   const authHeader = headers?.authorization || ''
   const token = authHeader.split(' ')[1]
 
-  const decoded = await decodeJWT(token, true)
+  const decoded = await decodeJWT(token, false)
 
   return {
     ...obj,
@@ -27,13 +27,11 @@ const injectCtx = async ({ request }: YogaInitialContext) => {
   }
 }
 
-export default async (sequelize: Sequelize) => {
+export default (sequelize: Sequelize) => {
   const typesArray = loadFilesSync(path.resolve(__dirname, '../domains'), { extensions: ['graphql'], recursive: true })
   const typeDefs: any = mergeTypeDefs(typesArray)
   const resolversArray = loadFilesSync(path.resolve(__dirname, '../domains/**/*.resolvers.*'), { extensions: ['ts'], recursive: true })
   const resolvers: any = mergeResolvers(resolversArray)
-
-  const cert = await Bun.file(path.join(__dirname, '../../cert/public_key.pem')).text()
 
   return createYoga({
     schema: createSchema({ typeDefs, resolvers }),
@@ -42,6 +40,6 @@ export default async (sequelize: Sequelize) => {
       return { sequelize, ...injectCtx(initialContext) }
     },
     maskedErrors: config.NODE_ENV === 'production',
-    plugins: [useJWT({ signingKey: cert, issuer: 'mypayroll-api', ignoreExpiration: false, getToken: ({ request }) => request?.headers?.authorization?.split(' ')[1] })]
+    plugins: [useAuth()]
   })
 }

@@ -14,7 +14,6 @@
     "test:single": "bun test --watch ./src/tests/files/user.test.ts NODE_ENV=test"
   },
   "dependencies": {
-    "@graphql-yoga/plugin-jwt": "^2.4.0",
     "bcryptjs": "2.4.3",
     "graphql-apollo-errors": "^2.0.3",
     "graphql-yoga": "^5.1.1",

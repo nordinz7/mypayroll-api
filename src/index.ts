@@ -25,7 +25,7 @@ export const startServer = async (): Promise<ServerInstance> => {
       },
       hostname: config.HOSTNAME,
       development: config.NODE_ENV === 'development',
-      fetch: await graphqlPlugin(dbInstance)
+      fetch: graphqlPlugin(dbInstance)
     })
 
     const color = config.NODE_ENV === 'development' ? '36m' : '33m'
