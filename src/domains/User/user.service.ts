@@ -123,7 +123,7 @@ export const signIn = async (input: SignInInput, ctx: Context) => {
     throw SevenBoom.badRequest('Invalid password')
   }
 
-  const jwt = signJWT(user.dataValues)
+  const jwt = signJWT({ user: user.dataValues })
 
   return { jwt }
 }

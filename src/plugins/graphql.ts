@@ -23,7 +23,7 @@ const injectCtx = async ({ request }: YogaInitialContext) => {
   }
 
   const decoded = await decodeJWT(token, true)
-  console.log('--------decoded', decoded)
+
   return {
     ...obj,
     user: decoded
