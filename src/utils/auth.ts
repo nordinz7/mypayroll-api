@@ -7,12 +7,13 @@ export const signJWT = async (payload: string | Buffer | object) => {
   return JWT.sign(payload, cert, { expiresIn: '1d' })
 }
 
-export const verifyJWT = async (token: string): Promise<object | string> => {
+export const verifyJWT = async (token: string): Promise<object | string | null> => {
   try {
     const cert = await Bun.file(path.join(__dirname, '../../cert/public_key.pem')).text()
     return JWT.verify(token, cert, { ignoreExpiration: false })
   } catch (e) {
-    throw SevenBoom.badRequest(`Failed to verify JWT: ${e instanceof Error ? e.message : 'Unknown error'}`)
+    console.error(`Failed to verify JWT: ${e instanceof Error ? e.message : 'Unknown error'}`)
+    return null
   }
 }
 
@@ -20,10 +21,11 @@ export const decodeJWT = async (token: string, isVerify: boolean = false) => {
   try {
     const decoded = JWT.decode(token)
     if (isVerify) {
-      return verifyJWT(token)
+      return verifyJWT(token) || null
     }
     return decoded
   } catch (e) {
-    throw SevenBoom.badRequest(`Failed to decode JWT: ${e instanceof Error ? e.message : 'Unknown error'}`)
+    console.log(`Failed to decode JWT: ${e instanceof Error ? e.message : 'Unknown error'}`)
+    return null
   }
 }
