@@ -5,6 +5,7 @@ import Joi from 'joi'
 import { Op } from 'sequelize'
 import { validateUserInput } from './helper'
 import { signJWT } from '../../utils/auth'
+import { compare } from 'bcryptjs'
 
 export const getUser = async (uuid: string, ctx: Context) => {
   if (!uuid) {
@@ -56,7 +57,7 @@ export const getUsers = async (input: UserQueryInput, ctx: Context) => {
 }
 
 export const createUser = async (input: CreateUserInput, ctx: Context) => {
-  const value = validateUserInput(input)
+  const value = await validateUserInput(input)
 
   const { email } = value
 
@@ -76,7 +77,7 @@ export const createUser = async (input: CreateUserInput, ctx: Context) => {
 }
 
 export const updateUser = async (input: CreateUserInput, ctx: Context) => {
-  const value = validateUserInput(input)
+  const value = await validateUserInput(input)
 
   const { uuid, email } = value
 
@@ -118,8 +119,9 @@ export const signIn = async (input: SignInInput, ctx: Context) => {
     throw SevenBoom.notFound('User not found')
   }
 
-  // @ts-ignore
-  if (user.password !== password) {
+  const isValidPwd = await compare(password, user.password)
+
+  if (!isValidPwd) {
     throw SevenBoom.badRequest('Invalid password')
   }
 

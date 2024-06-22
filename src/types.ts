@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql'
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -28,7 +28,6 @@ export type CompensationItem = {
   __typename?: 'CompensationItem';
   amount: Scalars['Float']['output'];
   createdAt: Scalars['DateTime']['output'];
-  employeeId?: Maybe<Scalars['Int']['output']>;
   endDate?: Maybe<Scalars['String']['output']>;
   enumerationId?: Maybe<Scalars['Int']['output']>;
   id: Scalars['Int']['output'];
@@ -147,52 +146,42 @@ export type Mutation = {
   updateUser?: Maybe<User>;
 };
 
-
 export type MutationCreateEmployeeArgs = {
   input?: InputMaybe<EmployeeInput>;
 };
-
 
 export type MutationCreateEnumerationArgs = {
   input: UpdateEnumerationInput;
 };
 
-
 export type MutationCreateUserArgs = {
   input?: InputMaybe<CreateUserInput>;
 };
-
 
 export type MutationDeleteUserArgs = {
   uuid?: InputMaybe<Scalars['UUID']['input']>;
 };
 
-
 export type MutationResetPasswordArgs = {
   email: Scalars['String']['input'];
 };
-
 
 export type MutationSignInArgs = {
   input?: InputMaybe<SignInInput>;
 };
 
-
 export type MutationUnDeleteUserArgs = {
   uuid?: InputMaybe<Scalars['UUID']['input']>;
 };
-
 
 export type MutationUpdateEmployeeArgs = {
   id?: InputMaybe<Scalars['Int']['input']>;
   input?: InputMaybe<EmployeeInput>;
 };
 
-
 export type MutationUpdateEnumerationArgs = {
   input: UpdateEnumerationInput;
 };
-
 
 export type MutationUpdateUserArgs = {
   input?: InputMaybe<CreateUserInput>;
@@ -203,30 +192,25 @@ export type Query = {
   employee?: Maybe<Employee>;
   employees?: Maybe<Employees>;
   enumeration?: Maybe<Enumeration>;
-  user: User;
+  user?: Maybe<User>;
   users?: Maybe<Users>;
 };
-
 
 export type QueryEmployeeArgs = {
   id: Scalars['Int']['input'];
 };
 
-
 export type QueryEmployeesArgs = {
   input?: InputMaybe<EmployeesQueryInput>;
 };
-
 
 export type QueryEnumerationArgs = {
   id: Scalars['Int']['input'];
 };
 
-
 export type QueryUserArgs = {
   uuid?: InputMaybe<Scalars['UUID']['input']>;
 };
-
 
 export type QueryUsersArgs = {
   input?: InputMaybe<UserQueryInput>;
@@ -273,7 +257,7 @@ export type Token = {
 export type UpdateEnumerationInput = {
   basicSalary: Scalars['Float']['input'];
   compensationItems?: InputMaybe<Array<InputMaybe<CreateCompensationItemInput>>>;
-  employeeId: Scalars['Int']['input'];
+  enumerationId: Scalars['Int']['input'];
 };
 
 export type User = {
@@ -282,15 +266,13 @@ export type User = {
   email: Scalars['String']['output'];
   name: Scalars['String']['output'];
   password: Scalars['String']['output'];
-  status: ActiveStatus;
+  status?: Maybe<ActiveStatus>;
   updatedAt: Scalars['String']['output'];
   uuid?: Maybe<Scalars['UUID']['output']>;
 };
 
 export type UserQueryInput = {
-  email?: InputMaybe<Scalars['String']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   q?: InputMaybe<Scalars['String']['input']>;
 };
@@ -308,10 +290,7 @@ export type NumberPagination = {
   offset?: Maybe<Scalars['Int']['output']>;
 };
 
-
-
 export type ResolverTypeWrapper<T> = Promise<T> | T;
-
 
 export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
   resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
@@ -374,8 +353,6 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
   context: TContext,
   info: GraphQLResolveInfo
 ) => TResult | Promise<TResult>;
-
-
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
@@ -445,7 +422,6 @@ export type ResolversParentTypes = {
 export type CompensationItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['CompensationItem'] = ResolversParentTypes['CompensationItem']> = {
   amount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  employeeId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   endDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   enumerationId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -520,7 +496,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   employee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType, RequireFields<QueryEmployeeArgs, 'id'>>;
   employees?: Resolver<Maybe<ResolversTypes['Employees']>, ParentType, ContextType, Partial<QueryEmployeesArgs>>;
   enumeration?: Resolver<Maybe<ResolversTypes['Enumeration']>, ParentType, ContextType, RequireFields<QueryEnumerationArgs, 'id'>>;
-  user?: Resolver<ResolversTypes['User'], ParentType, ContextType, Partial<QueryUserArgs>>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<QueryUserArgs>>;
   users?: Resolver<Maybe<ResolversTypes['Users']>, ParentType, ContextType, Partial<QueryUsersArgs>>;
 };
 
@@ -551,7 +527,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  status?: Resolver<ResolversTypes['ActiveStatus'], ParentType, ContextType>;
+  status?: Resolver<Maybe<ResolversTypes['ActiveStatus']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   uuid?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -587,4 +563,3 @@ export type Resolvers<ContextType = any> = {
   Users?: UsersResolvers<ContextType>;
   numberPagination?: NumberPaginationResolvers<ContextType>;
 };
-

@@ -2,8 +2,9 @@ import { SevenBoom } from 'graphql-apollo-errors'
 import Joi from 'joi'
 import { ActiveStatus, type CreateUserInput } from '../../types'
 import { v4 as uuidV4 } from 'uuid'
+import { hash } from 'bcryptjs'
 
-export const validateUserInput = (input: CreateUserInput) => {
+export const validateUserInput = async (input: CreateUserInput) => {
   const createUserSchema = Joi.object({
     uuid: Joi.string().uuid().default(uuidV4()),
     name: Joi.string().required(),
@@ -24,6 +25,8 @@ export const validateUserInput = (input: CreateUserInput) => {
   }
 
   delete value.confirmPassword
+
+  value.password = await hash(value.password, 10)
 
   return value
 }
