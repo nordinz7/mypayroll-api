@@ -3,9 +3,9 @@ import { verifyJWT } from '../utils/auth'
 
 export const useAuth = (): Plugin => {
   return {
-    async onRequest ({ request, fetchAPI, endResponse }) {
+    async onRequest (params) {
+      const { request, fetchAPI, endResponse } = params
       const rtnObj:any = { message: '' }
-
       const authToken = request.headers?.get('authorization')
       const [type, token] = authToken?.split(' ') || [null, null]
 
