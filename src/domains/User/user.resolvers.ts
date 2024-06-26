@@ -1,6 +1,6 @@
 import type { Context } from '../../plugins/graphql'
 import type { MutationCreateUserArgs, MutationDeleteUserArgs, MutationResetPasswordArgs, MutationSignInArgs, MutationUnDeleteUserArgs, MutationUpdateUserArgs, QueryUserArgs, QueryUsersArgs } from '../../types'
-import { createUser, deleteUser, getUser, getUsers, resetPassword, signIn, unDeleteUser, updateUser } from './user.service'
+import { createUser, deleteUser, getUser, getUsers, resetPassword, signIn, signUp, unDeleteUser, updateUser } from './user.service'
 
 export default {
   Query: {
@@ -23,6 +23,9 @@ export default {
     },
     unDeleteUser: async (_: any, { uuid }: MutationUnDeleteUserArgs, ctx: Context) => {
       return unDeleteUser(uuid, ctx)
+    },
+    signUp: async (_: any, { input }: MutationCreateUserArgs, ctx: Context) => {
+      return signUp(input, ctx)
     },
     signIn: async (_: any, { input }: MutationSignInArgs, ctx: Context) => {
       return signIn(input, ctx)

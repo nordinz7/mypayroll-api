@@ -1,5 +1,6 @@
 import { config } from '../app.config'
 import graphqlPlugin from './plugins/graphql'
+import routes from './routes'
 import { DbSingletonSql } from './utils/sqldb'
 import type { Server } from 'bun'
 import type { Sequelize } from 'sequelize'
@@ -11,6 +12,14 @@ export type ServerInstance = {
 
 let serverInstance:ServerInstance['server']
 let dbInstance:ServerInstance['db']
+
+export const fetchWrapper = async (request: Request, misc: any):Promise<any> => {
+  if (request.url.includes('/graphql')) {
+    return graphqlPlugin(dbInstance)(request, misc)
+  }
+
+  return routes(request, { sequelize: dbInstance })
+}
 
 export const startServer = async (): Promise<ServerInstance> => {
   if (!dbInstance) {
@@ -25,7 +34,7 @@ export const startServer = async (): Promise<ServerInstance> => {
       },
       hostname: config.HOSTNAME,
       development: config.NODE_ENV === 'development',
-      fetch: graphqlPlugin(dbInstance)
+      fetch: fetchWrapper
     })
 
     const color = config.NODE_ENV === 'development' ? '36m' : '33m'

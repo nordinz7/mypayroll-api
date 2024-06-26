@@ -48,5 +48,6 @@ type Mutation {
   unDeleteUser(uuid: UUID): User
 
   signIn(input: SignInInput): Token
+  signUp(input: CreateUserInput): Token
   resetPassword(email: String!): Response
 }

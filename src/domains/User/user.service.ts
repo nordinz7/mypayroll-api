@@ -125,7 +125,15 @@ export const signIn = async (input: SignInInput, ctx: Context) => {
     throw SevenBoom.badRequest('Invalid password')
   }
 
-  const jwt = signJWT({ user: user.dataValues })
+  const jwt = await signJWT({ user: user.dataValues })
+
+  return { jwt }
+}
+
+export const signUp = async (input: CreateUserInput, ctx: Context) => {
+  const user = await createUser(input, ctx)
+
+  const jwt = await signJWT({ user })
 
   return { jwt }
 }

@@ -13,9 +13,11 @@ export type Context = {
   user?: User
 }
 
-const injectCtx = async ({ request }: YogaInitialContext) => {
+const injectCtx = async (params: YogaInitialContext) => {
+  const { request } = params
+
   const obj = {}
-  const { headers } = request // @ts-ignore
+  const { headers } = request || {} // @ts-ignore
   const authHeader = headers?.authorization || ''
   const token = authHeader.split(' ')[1]
 

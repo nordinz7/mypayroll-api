@@ -7,4 +7,3 @@ export type RouteHandler = (req: Request, ctx?: Ctx) => Response | Promise<Respo
 export type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
 export type RouteHandlerModule = Partial<Record<RequestMethod, RouteHandler>>
-
