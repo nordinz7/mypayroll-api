@@ -46,7 +46,7 @@ export default (sequelize: Sequelize) => sequelize.define('employee', {
     type: DataTypes.STRING,
     allowNull: true // Assuming race can be optional
   },
-  maritalStatus: { // Corrected typo from "martialStatus" to "maritalStatus"
+  martialStatus: { // Corrected typo from "martialStatus" to "maritalStatus"
     type: DataTypes.STRING,
     allowNull: false
   },
@@ -86,5 +86,4 @@ export default (sequelize: Sequelize) => sequelize.define('employee', {
     type: DataTypes.STRING,
     allowNull: true // Assuming email can be optional
   }
-
 })
