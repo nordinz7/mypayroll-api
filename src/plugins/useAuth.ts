@@ -9,10 +9,10 @@ export const useAuth = (): Plugin => {
       const authToken = request.headers?.get('authorization')
       const [type, token] = authToken?.split(' ') || [null, null]
 
-      if (type !== 'jwt') {
-        rtnObj.message = 'Invalid token type'
-      } else if (!token) {
+      if (!authToken) {
         rtnObj.message = 'Missing Auth token'
+      } else if (!type || !token) {
+        rtnObj.message = 'Invalid Auth token'
       } else {
         try {
           const val = await verifyJWT(token || '')

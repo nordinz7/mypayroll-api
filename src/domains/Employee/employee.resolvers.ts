@@ -24,13 +24,17 @@ export default {
 
       const { q = '', limit = 10, offset = 0 } = input
 
+      const where = {}
+
+      if (q) {
+        where[Op.or] = [
+          { name: { [Op.iLike]: `%${q}%` } }
+          // { email: { [Op.iLike]: `%${q}%` } }
+        ]
+      }
+
       const { count, rows } = await ctx.sequelize.models.employee.findAndCountAll({
-        where: {
-          [Op.or]: [
-            { name: { [Op.iLike]: `%${q}%` } }
-            // { email: { [Op.iLike]: `%${q}%` } }
-          ]
-        },
+        where,
         limit,
         offset
       })
