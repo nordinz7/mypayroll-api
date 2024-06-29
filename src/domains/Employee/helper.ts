@@ -22,15 +22,15 @@ export const validateEmployee = (input: EmployeeInput | undefined | null): Emplo
     religion: Joi.valid(...Object.values(Religion)),
     race: Joi.valid(...Object.values(Race)),
     martialStatus: Joi.valid(...Object.values(MartialStatus)).default(MartialStatus.Single),
-    qualification: Joi.string().min(3).max(255).optional(),
+    qualification: Joi.string().min(3).max(255).optional().allow(null),
     educationLevel: Joi.valid(...Object.values(EducationLevel)),
-    spouseName: Joi.string().min(3).max(255).optional(),
-    spouseOccupation: Joi.string().min(3).max(255).optional(),
-    children: Joi.number().optional().default(0),
+    spouseName: Joi.string().min(3).max(255).optional().allow(null),
+    spouseOccupation: Joi.string().min(3).max(255).optional().allow(null),
+    children: Joi.alternatives().try(Joi.number(), Joi.string()).default(0),
     joinDate: Joi.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-    endDate: Joi.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-    phone: Joi.string().min(3).max(255).optional(),
-    email: Joi.string().email().optional()
+    endDate: Joi.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().allow(null),
+    phone: Joi.string().min(3).max(255).optional().allow(null),
+    email: Joi.string().email().optional().allow(null)
   })
 
   const { error, value } = schema.validate(input)
