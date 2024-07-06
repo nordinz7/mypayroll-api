@@ -1,4 +1,3 @@
-import { SevenBoom } from 'graphql-apollo-errors'
 import JWT from 'jsonwebtoken'
 import path from 'path'
 

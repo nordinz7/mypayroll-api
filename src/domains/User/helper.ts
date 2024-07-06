@@ -1,10 +1,12 @@
 import { SevenBoom } from 'graphql-apollo-errors'
 import Joi from 'joi'
-import { ActiveStatus, type CreateUserInput } from '../../types'
+import { ActiveStatus } from '../../types'
 import { v4 as uuidV4 } from 'uuid'
 import { hash } from 'bcryptjs'
 
-export const validateUserInput = async (input: CreateUserInput) => {
+type ValidateUserType = 'create' | 'update'
+
+export const validateUserInput = async (input: any, type:ValidateUserType = 'create') => {
   const createUserSchema = Joi.object({
     uuid: Joi.string().uuid().default(uuidV4()),
     name: Joi.string().required(),
@@ -14,19 +16,27 @@ export const validateUserInput = async (input: CreateUserInput) => {
     status: Joi.string().valid(...Object.values(ActiveStatus)).default(ActiveStatus.Active)
   })
 
-  const { error, value } = createUserSchema.validate(input)
+  const updateUserSchema = Joi.object({
+    uuid: Joi.string().uuid().required(),
+    name: Joi.string().required(),
+    email: Joi.string().email().required(),
+  })
+
+  const { error, value } = (type === 'create' ? createUserSchema : updateUserSchema).validate(input)
 
   if (error) {
     throw SevenBoom.badRequest(error.message)
   }
 
-  if (value.password !== value.confirmPassword) {
-    throw SevenBoom.badRequest('Password does not match')
+  if (type === 'create'){
+    if (value.password !== value.confirmPassword) {
+      throw SevenBoom.badRequest('Password does not match')
+    }
+
+    delete value.confirmPassword
+
+    value.password = await hash(value.password, 10)
   }
-
-  delete value.confirmPassword
-
-  value.password = await hash(value.password, 10)
 
   return value
 }

@@ -2,7 +2,7 @@ type User {
   uuid: UUID
   name: String!
   email: String!
-  password: String!
+  # password: String!
   createdAt: String!
   updatedAt: String!
   status: ActiveStatus
@@ -31,6 +31,12 @@ input CreateUserInput {
   confirmPassword: String!
 }
 
+input UpdateUserInput {
+  uuid: UUID
+  name: String
+  email: String
+}
+
 input SignInInput {
   email: String!
   password: String!
@@ -43,7 +49,7 @@ type Query {
 
 type Mutation {
   createUser(input: CreateUserInput): User
-  updateUser(input: CreateUserInput): User
+  updateUser(input: UpdateUserInput): User
   deleteUser(uuid: UUID): User
   unDeleteUser(uuid: UUID): User
 

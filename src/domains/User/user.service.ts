@@ -1,5 +1,5 @@
 import { SevenBoom } from 'graphql-apollo-errors'
-import { ActiveStatus, type CreateUserInput, type SignInInput, type UserQueryInput } from '../../types'
+import { ActiveStatus, type CreateUserInput, type SignInInput, type UpdateUserInput, type UserQueryInput } from '../../types'
 import type { Context } from '../../plugins/graphql'
 import Joi from 'joi'
 import { Op } from 'sequelize'
@@ -76,10 +76,10 @@ export const createUser = async (input: CreateUserInput, ctx: Context) => {
   return user.dataValues
 }
 
-export const updateUser = async (input: CreateUserInput, ctx: Context) => {
-  const value = await validateUserInput(input)
+export const updateUser = async (input: UpdateUserInput, ctx: Context) => {
+  const value = await validateUserInput(input, 'update')
 
-  const { uuid, email } = value
+  const { uuid, ...rest } = value
 
   const user = await ctx.sequelize.models.user.findByPk(uuid)
 
@@ -87,7 +87,7 @@ export const updateUser = async (input: CreateUserInput, ctx: Context) => {
     throw SevenBoom.notFound('User not found')
   }
 
-  return (await user.update({ ...value })).dataValues
+  return (await user.update({ ...rest })).dataValues
 }
 
 export const deleteUser = async (uuid: string, ctx: Context) => {

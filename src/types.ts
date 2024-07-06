@@ -200,7 +200,7 @@ export type MutationUpdateEnumerationArgs = {
 
 
 export type MutationUpdateUserArgs = {
-  input?: InputMaybe<CreateUserInput>;
+  input?: InputMaybe<UpdateUserInput>;
 };
 
 export type Query = {
@@ -281,12 +281,17 @@ export type UpdateEnumerationInput = {
   enumerationId: Scalars['Int']['input'];
 };
 
+export type UpdateUserInput = {
+  email?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  uuid?: InputMaybe<Scalars['UUID']['input']>;
+};
+
 export type User = {
   __typename?: 'User';
   createdAt: Scalars['String']['output'];
   email: Scalars['String']['output'];
   name: Scalars['String']['output'];
-  password: Scalars['String']['output'];
   status?: Maybe<ActiveStatus>;
   updatedAt: Scalars['String']['output'];
   uuid?: Maybe<Scalars['UUID']['output']>;
@@ -409,6 +414,7 @@ export type ResolversTypes = {
   Token: ResolverTypeWrapper<Token>;
   UUID: ResolverTypeWrapper<Scalars['UUID']['output']>;
   UpdateEnumerationInput: UpdateEnumerationInput;
+  UpdateUserInput: UpdateUserInput;
   User: ResolverTypeWrapper<User>;
   UserQueryInput: UserQueryInput;
   Users: ResolverTypeWrapper<Users>;
@@ -439,6 +445,7 @@ export type ResolversParentTypes = {
   Token: Token;
   UUID: Scalars['UUID']['output'];
   UpdateEnumerationInput: UpdateEnumerationInput;
+  UpdateUserInput: UpdateUserInput;
   User: User;
   UserQueryInput: UserQueryInput;
   Users: Users;
@@ -553,7 +560,6 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['ActiveStatus']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   uuid?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
