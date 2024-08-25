@@ -1,6 +1,6 @@
 export const config = {
   PORT: Bun.env.PORT || 8000,
-  HOSTNAME: Bun.env.HOSTNAME || 'localhost',
+  HOSTNAME: Bun.env.HOSTNAME || '0.0.0.0',
   NODE_ENV: Bun.env.NODE_ENV || 'development',
   SECRET_KEY: Bun.env.SECRET_KEY || 'secret',
   JWT_SECRET_PASSPHRASE: Bun.env.JWT_SECRET_PASSPHRASE || '12345t',
@@ -9,6 +9,6 @@ export const config = {
   POSTGRES_DB_TEST: Bun.env.POSTGRES_DB_TEST || 'payroll-test',
   POSTGRES_USER: Bun.env.POSTGRES_USER || 'postgres',
   POSTGRES_PASSWORD: Bun.env.POSTGRES_PASSWORD || 'postgres',
-  POSTGRES_HOST: Bun.env.POSTGRES_HOST || 'localhost',
+  POSTGRES_HOST: Bun.env.POSTGRES_HOST || 'localhost', // need to port to docker container ip
   POSTGRES_PORT: Bun.env.POSTGRES_PORT || 5432,
 }
