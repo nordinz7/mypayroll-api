@@ -10,10 +10,10 @@ export type ServerInstance = {
   db: Sequelize
 }
 
-let serverInstance:ServerInstance['server']
-let dbInstance:ServerInstance['db']
+let serverInstance: ServerInstance['server']
+let dbInstance: ServerInstance['db']
 
-export const fetchWrapper = async (request: Request, misc: any):Promise<any> => {
+export const fetchWrapper = async (request: Request, misc: any): Promise<any> => {
   if (request.url.includes('/graphql')) {
     return graphqlPlugin(dbInstance)(request, misc)
   }
