@@ -39,7 +39,7 @@ export const startServer = async (): Promise<ServerInstance> => {
 
     const color = config.NODE_ENV === 'development' ? '36m' : '33m'
 
-    console.log(`\x1b[${color}%s\x1b[0m`, `Listening on http://localhost:${serverInstance.port} on ${config.NODE_ENV} mode`)
+    console.log(`\x1b[${color}%s\x1b[0m`, `Listening on http://${config.HOSTNAME}:${serverInstance.port} on ${config.NODE_ENV} mode`)
   }
 
   return { server: serverInstance, db: dbInstance }
