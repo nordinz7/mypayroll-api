@@ -1,4 +1,4 @@
-import type { Context } from '../../plugins/graphql'
+import type { Context } from '../..'
 import type { MutationCreateUserArgs, MutationDeleteUserArgs, MutationResetPasswordArgs, MutationSignInArgs, MutationUnDeleteUserArgs, MutationUpdateUserArgs, QueryUserArgs, QueryUsersArgs } from '../../types'
 import { createUser, deleteUser, getUser, getUsers, resetPassword, signIn, signUp, unDeleteUser, updateUser } from './user.service'
 

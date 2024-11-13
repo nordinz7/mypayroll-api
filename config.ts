@@ -1,4 +1,4 @@
-export const config = {
+export default {
   PORT: Bun.env.PORT || 8000,
   HOSTNAME: Bun.env.HOSTNAME || '0.0.0.0',
   NODE_ENV: Bun.env.NODE_ENV || 'development',
@@ -11,4 +11,8 @@ export const config = {
   POSTGRES_PASSWORD: Bun.env.POSTGRES_PASSWORD || 'postgres',
   POSTGRES_HOST: Bun.env.POSTGRES_HOST || 'localhost', // need to port to docker container ip
   POSTGRES_PORT: Bun.env.POSTGRES_PORT || 5432,
+
+  REDIS_HOST: Bun.env.REDIS_HOST || 'localhost',
+  REDIS_PORT: Bun.env.REDIS_PORT || 6379,
+  REDIS_PASSWORD: Bun.env.REDIS_PASSWORD || 'redis',
 }

@@ -1,5 +1,5 @@
-import { isNil, pick } from 'lodash'
-import { config } from '../../app.config'
+import { pick } from 'lodash'
+import config from '../../config'
 
 type PostHeadersType = {
   authorization: string,

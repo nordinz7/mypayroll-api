@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize'
-import { config } from '../../app.config'
+import config from '../../config'
 import initModels from '../models'
 import initMigration from '../migrations'
 import relationships from '../relationships'

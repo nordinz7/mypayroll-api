@@ -1,8 +1,8 @@
 import { SevenBoom } from 'graphql-apollo-errors'
 import type { MutationCreateEmployeeArgs, MutationUpdateEmployeeArgs, QueryEmployeeArgs, QueryEmployeesArgs } from '../../types'
 import { Op } from 'sequelize'
-import type { Context } from '../../plugins/graphql'
 import { validateEmployee } from './helper'
+import type { Context } from '../..'
 
 export default {
   Query: {
@@ -10,12 +10,20 @@ export default {
       if (!id) {
         return SevenBoom.badRequest('Employee id is required')
       }
+      const cacheKey = `employee:${id}`
+      const cached = await ctx.cache.get(cacheKey)
+      console.log('--------cached', cached)
+      if (cached) {
+        return cached
+      }
 
       const employee = await ctx.sequelize.models.employee.findByPk(id)
 
       if (!employee) {
         return SevenBoom.notFound('Employee not found')
       }
+
+      await ctx.cache.set(cacheKey, employee.toJSON())
 
       return employee
     },
@@ -58,6 +66,8 @@ export default {
       if (!employee) {
         return SevenBoom.notFound('Employee not found')
       }
+
+      await ctx.cache.del(`employee:${id}`)
 
       return employee?.update({ ...dataInput }, { where: { id } })
     }

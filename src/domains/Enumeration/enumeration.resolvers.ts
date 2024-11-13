@@ -1,6 +1,6 @@
 import { SevenBoom } from 'graphql-apollo-errors'
 import type { MutationCreateEnumerationArgs, MutationUpdateEnumerationArgs, QueryEnumerationArgs } from '../../types'
-import type { Context } from '../../plugins/graphql'
+import type { Context } from '../..'
 
 export default {
   Query: {

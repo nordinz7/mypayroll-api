@@ -2,15 +2,8 @@ import { createYoga, createSchema, type YogaInitialContext } from 'graphql-yoga'
 import { loadFilesSync } from '@graphql-tools/load-files'
 import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge'
 import path from 'path'
-import { config } from '../../app.config'
-import type { Sequelize } from 'sequelize'
-import type { User } from '../types'
+import config from '../../config'
 import { decodeJWT } from '../utils/auth'
-
-export type Context = {
-  sequelize: Sequelize
-  user?: User
-}
 
 const injectCtx = async (params: YogaInitialContext) => {
   const { request } = params
@@ -28,7 +21,7 @@ const injectCtx = async (params: YogaInitialContext) => {
   }
 }
 
-export default (sequelize: Sequelize) => {
+export default (ctx: Record<string, any> = {}) => {
   const typesArray = loadFilesSync(path.resolve(__dirname, '../domains'), { extensions: ['graphql'], recursive: true })
   const typeDefs: any = mergeTypeDefs(typesArray)
   const resolversArray = loadFilesSync(path.resolve(__dirname, '../domains/**/*.resolvers.*'), { extensions: ['ts'], recursive: true })
@@ -38,7 +31,7 @@ export default (sequelize: Sequelize) => {
     schema: createSchema({ typeDefs, resolvers }),
     graphiql: true,
     context: (initialContext: YogaInitialContext) => {
-      return { sequelize, ...injectCtx(initialContext) }
+      return { ...ctx, ...injectCtx(initialContext) }
     },
     maskedErrors: config.NODE_ENV === 'production',
   })
