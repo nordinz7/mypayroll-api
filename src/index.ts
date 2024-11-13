@@ -4,6 +4,7 @@ import routes from './routes'
 import { DbSingletonSql } from './utils/sqldb'
 import type { Server } from 'bun'
 import type { Sequelize } from 'sequelize'
+import { ApiResponse } from './utils/request'
 
 export type ServerInstance = {
   server: Server
@@ -30,7 +31,7 @@ export const startServer = async (): Promise<ServerInstance> => {
     serverInstance = Bun.serve({
       port: config.PORT,
       error: (request) => {
-        return new Response(JSON.stringify(request), { status: 500 })
+        return new ApiResponse(request, { status: 500 })
       },
       hostname: config.HOSTNAME,
       development: config.NODE_ENV === 'development',
