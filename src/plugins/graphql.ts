@@ -6,7 +6,6 @@ import { config } from '../../app.config'
 import type { Sequelize } from 'sequelize'
 import type { User } from '../types'
 import { decodeJWT } from '../utils/auth'
-import { useAuth } from './useAuth'
 
 export type Context = {
   sequelize: Sequelize
@@ -21,7 +20,7 @@ const injectCtx = async (params: YogaInitialContext) => {
   const authHeader = headers?.authorization || ''
   const token = authHeader.split(' ')[1]
 
-  const decoded = await decodeJWT(token, false)
+  const decoded = await decodeJWT(token, true)
 
   return {
     ...obj,
@@ -42,6 +41,5 @@ export default (sequelize: Sequelize) => {
       return { sequelize, ...injectCtx(initialContext) }
     },
     maskedErrors: config.NODE_ENV === 'production',
-    plugins: [useAuth()]
   })
 }
