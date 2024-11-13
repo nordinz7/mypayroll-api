@@ -17,36 +17,36 @@
     "bcryptjs": "2.4.3",
     "date-fns": "^3.6.0",
     "graphql-apollo-errors": "^2.0.3",
-    "graphql-yoga": "^5.1.1",
-    "joi": "^17.13.1",
+    "graphql-yoga": "^5.10.1",
+    "joi": "^17.13.3",
     "jsonwebtoken": "9.0.2",
     "lodash": "^4.17.21",
     "path": "^0.12.7",
-    "pg": "^8.11.3",
+    "pg": "^8.13.1",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.1",
+    "sequelize": "^6.37.5",
     "sequelize-cli": "^6.6.2",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^5.0.2",
-    "@graphql-codegen/typescript": "^4.0.4",
-    "@graphql-codegen/typescript-resolvers": "^4.0.4",
+    "@graphql-codegen/cli": "^5.0.3",
+    "@graphql-codegen/typescript": "^4.1.1",
+    "@graphql-codegen/typescript-resolvers": "^4.4.0",
     "@graphql-tools/load-files": "^7.0.0",
     "@types/bcryptjs": "2.4.6",
     "@types/bun": "latest",
     "@types/jsonwebtoken": "9.0.6",
-    "@types/lodash": "^4.17.1",
+    "@types/lodash": "^4.17.13",
     "@types/uuid": "^9.0.8",
-    "@typescript-eslint/eslint-plugin": "^7.4.0",
-    "@typescript-eslint/parser": "^7.4.0",
-    "eslint": "^8.0.1",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.1",
     "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.25.2",
-    "eslint-plugin-n": "^16.0.0 ",
-    "eslint-plugin-promise": "^6.0.0"
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.6.0"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.3.3"
   }
 }
