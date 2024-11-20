@@ -1,0 +1,37 @@
+type Chart {
+  id: Int
+  productId: Int
+  quantity: Int
+  userId: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type Charts {
+  rows: [Chart]
+  pageInfo: numberPagination
+}
+
+input ChartsQueryInput {
+  productId: Int
+  userId: Int
+  limit: Int
+  offset: Int
+}
+
+input ChartInput {
+  productId: Int
+  quantity: Int
+  userId: Int
+}
+
+type Query {
+  chart(id: Int): Chart
+  charts(input: ChartsQueryInput): Charts
+}
+
+type Mutation {
+  addChart(input: ChartInput): Chart
+  updateChart(id: Int, input: ChartInput): Chart
+  deleteChart(id: Int): Response
+}

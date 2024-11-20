@@ -24,6 +24,33 @@ export enum ActiveStatus {
   Deleted = 'DELETED'
 }
 
+export type Chart = {
+  __typename?: 'Chart';
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  id?: Maybe<Scalars['Int']['output']>;
+  productId?: Maybe<Scalars['Int']['output']>;
+  quantity?: Maybe<Scalars['Int']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  userId?: Maybe<Scalars['Int']['output']>;
+};
+
+export type ChartInput = {
+  productId?: InputMaybe<Scalars['Int']['input']>;
+  quantity?: InputMaybe<Scalars['Int']['input']>;
+  userId?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type Charts = {
+  __typename?: 'Charts';
+  pageInfo?: Maybe<NumberPagination>;
+  rows?: Maybe<Array<Maybe<Chart>>>;
+};
+
+export type ChartsQueryInput = {
+  productId?: InputMaybe<Scalars['Int']['input']>;
+  userId?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type CompensationItem = {
   __typename?: 'CompensationItem';
   amount: Scalars['Float']['output'];
@@ -134,17 +161,28 @@ export enum MartialStatus {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addChart?: Maybe<Chart>;
   createEmployee?: Maybe<Employee>;
   createEnumeration?: Maybe<Enumeration>;
+  createProduct?: Maybe<Product>;
   createUser?: Maybe<User>;
+  deleteChart?: Maybe<Response>;
   deleteUser?: Maybe<User>;
   resetPassword?: Maybe<Response>;
   signIn?: Maybe<Token>;
   signUp?: Maybe<Token>;
   unDeleteUser?: Maybe<User>;
+  updateChart?: Maybe<Chart>;
   updateEmployee?: Maybe<Employee>;
   updateEnumeration?: Maybe<Enumeration>;
+  updateProduct?: Maybe<Product>;
+  updateStatus?: Maybe<Response>;
   updateUser?: Maybe<User>;
+};
+
+
+export type MutationAddChartArgs = {
+  input?: InputMaybe<ChartInput>;
 };
 
 
@@ -158,8 +196,18 @@ export type MutationCreateEnumerationArgs = {
 };
 
 
+export type MutationCreateProductArgs = {
+  input?: InputMaybe<ProductInput>;
+};
+
+
 export type MutationCreateUserArgs = {
   input?: InputMaybe<CreateUserInput>;
+};
+
+
+export type MutationDeleteChartArgs = {
+  id?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -188,6 +236,12 @@ export type MutationUnDeleteUserArgs = {
 };
 
 
+export type MutationUpdateChartArgs = {
+  id?: InputMaybe<Scalars['Int']['input']>;
+  input?: InputMaybe<ChartInput>;
+};
+
+
 export type MutationUpdateEmployeeArgs = {
   id?: InputMaybe<Scalars['Int']['input']>;
   input?: InputMaybe<EmployeeInput>;
@@ -199,17 +253,93 @@ export type MutationUpdateEnumerationArgs = {
 };
 
 
+export type MutationUpdateProductArgs = {
+  id?: InputMaybe<Scalars['Int']['input']>;
+  input?: InputMaybe<ProductInput>;
+};
+
+
+export type MutationUpdateStatusArgs = {
+  id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
 export type MutationUpdateUserArgs = {
   input?: InputMaybe<UpdateUserInput>;
 };
 
+export type Product = {
+  __typename?: 'Product';
+  category?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['Int']['output']>;
+  image?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  price?: Maybe<Scalars['Float']['output']>;
+  quantity?: Maybe<Scalars['Int']['output']>;
+  sellerId?: Maybe<Scalars['Int']['output']>;
+  sold?: Maybe<Scalars['Int']['output']>;
+  status?: Maybe<ProductStatus>;
+  tags?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+export type ProductInput = {
+  category?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  image?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  price?: InputMaybe<Scalars['Float']['input']>;
+  quantity?: InputMaybe<Scalars['Int']['input']>;
+  tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+};
+
+export enum ProductStatus {
+  Discontinued = 'DISCONTINUED',
+  InStock = 'IN_STOCK',
+  OnSale = 'ON_SALE',
+  OutOfStock = 'OUT_OF_STOCK',
+  SoldOut = 'SOLD_OUT'
+}
+
+export type Products = {
+  __typename?: 'Products';
+  pageInfo?: Maybe<NumberPagination>;
+  rows?: Maybe<Array<Maybe<Product>>>;
+};
+
+export type ProductsQueryInput = {
+  category?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['Int']['input']>;
+  image?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  price?: InputMaybe<Scalars['Float']['input']>;
+  quantity?: InputMaybe<Scalars['Int']['input']>;
+  sold?: InputMaybe<Scalars['Int']['input']>;
+  tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+};
+
 export type Query = {
   __typename?: 'Query';
+  chart?: Maybe<Chart>;
+  charts?: Maybe<Charts>;
   employee?: Maybe<Employee>;
   employees?: Maybe<Employees>;
   enumeration?: Maybe<Enumeration>;
+  product?: Maybe<Product>;
+  products?: Maybe<Products>;
   user?: Maybe<User>;
   users?: Maybe<Users>;
+};
+
+
+export type QueryChartArgs = {
+  id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryChartsArgs = {
+  input?: InputMaybe<ChartsQueryInput>;
 };
 
 
@@ -225,6 +355,16 @@ export type QueryEmployeesArgs = {
 
 export type QueryEnumerationArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryProductArgs = {
+  id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryProductsArgs = {
+  input?: InputMaybe<ProductsQueryInput>;
 };
 
 
@@ -389,6 +529,10 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   ActiveStatus: ActiveStatus;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  Chart: ResolverTypeWrapper<Chart>;
+  ChartInput: ChartInput;
+  Charts: ResolverTypeWrapper<Charts>;
+  ChartsQueryInput: ChartsQueryInput;
   CompensationItem: ResolverTypeWrapper<CompensationItem>;
   CreateCompensationItemInput: CreateCompensationItemInput;
   CreateUserInput: CreateUserInput;
@@ -404,6 +548,11 @@ export type ResolversTypes = {
   JSON: ResolverTypeWrapper<Scalars['JSON']['output']>;
   MartialStatus: MartialStatus;
   Mutation: ResolverTypeWrapper<{}>;
+  Product: ResolverTypeWrapper<Product>;
+  ProductInput: ProductInput;
+  ProductStatus: ProductStatus;
+  Products: ResolverTypeWrapper<Products>;
+  ProductsQueryInput: ProductsQueryInput;
   Query: ResolverTypeWrapper<{}>;
   Race: Race;
   Religion: Religion;
@@ -424,6 +573,10 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
+  Chart: Chart;
+  ChartInput: ChartInput;
+  Charts: Charts;
+  ChartsQueryInput: ChartsQueryInput;
   CompensationItem: CompensationItem;
   CreateCompensationItemInput: CreateCompensationItemInput;
   CreateUserInput: CreateUserInput;
@@ -437,6 +590,10 @@ export type ResolversParentTypes = {
   Int: Scalars['Int']['output'];
   JSON: Scalars['JSON']['output'];
   Mutation: {};
+  Product: Product;
+  ProductInput: ProductInput;
+  Products: Products;
+  ProductsQueryInput: ProductsQueryInput;
   Query: {};
   Response: Response;
   SignInInput: SignInInput;
@@ -450,6 +607,22 @@ export type ResolversParentTypes = {
   UserQueryInput: UserQueryInput;
   Users: Users;
   numberPagination: NumberPagination;
+};
+
+export type ChartResolvers<ContextType = any, ParentType extends ResolversParentTypes['Chart'] = ResolversParentTypes['Chart']> = {
+  createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  productId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  quantity?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ChartsResolvers<ContextType = any, ParentType extends ResolversParentTypes['Charts'] = ResolversParentTypes['Charts']> = {
+  pageInfo?: Resolver<Maybe<ResolversTypes['numberPagination']>, ParentType, ContextType>;
+  rows?: Resolver<Maybe<Array<Maybe<ResolversTypes['Chart']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CompensationItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['CompensationItem'] = ResolversParentTypes['CompensationItem']> = {
@@ -513,23 +686,54 @@ export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  addChart?: Resolver<Maybe<ResolversTypes['Chart']>, ParentType, ContextType, Partial<MutationAddChartArgs>>;
   createEmployee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType, Partial<MutationCreateEmployeeArgs>>;
   createEnumeration?: Resolver<Maybe<ResolversTypes['Enumeration']>, ParentType, ContextType, RequireFields<MutationCreateEnumerationArgs, 'input'>>;
+  createProduct?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType, Partial<MutationCreateProductArgs>>;
   createUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<MutationCreateUserArgs>>;
+  deleteChart?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, Partial<MutationDeleteChartArgs>>;
   deleteUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<MutationDeleteUserArgs>>;
   resetPassword?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'email'>>;
   signIn?: Resolver<Maybe<ResolversTypes['Token']>, ParentType, ContextType, Partial<MutationSignInArgs>>;
   signUp?: Resolver<Maybe<ResolversTypes['Token']>, ParentType, ContextType, Partial<MutationSignUpArgs>>;
   unDeleteUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<MutationUnDeleteUserArgs>>;
+  updateChart?: Resolver<Maybe<ResolversTypes['Chart']>, ParentType, ContextType, Partial<MutationUpdateChartArgs>>;
   updateEmployee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType, Partial<MutationUpdateEmployeeArgs>>;
   updateEnumeration?: Resolver<Maybe<ResolversTypes['Enumeration']>, ParentType, ContextType, RequireFields<MutationUpdateEnumerationArgs, 'input'>>;
+  updateProduct?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType, Partial<MutationUpdateProductArgs>>;
+  updateStatus?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, Partial<MutationUpdateStatusArgs>>;
   updateUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<MutationUpdateUserArgs>>;
 };
 
+export type ProductResolvers<ContextType = any, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = {
+  category?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  price?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  quantity?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  sellerId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  sold?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  status?: Resolver<Maybe<ResolversTypes['ProductStatus']>, ParentType, ContextType>;
+  tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProductsResolvers<ContextType = any, ParentType extends ResolversParentTypes['Products'] = ResolversParentTypes['Products']> = {
+  pageInfo?: Resolver<Maybe<ResolversTypes['numberPagination']>, ParentType, ContextType>;
+  rows?: Resolver<Maybe<Array<Maybe<ResolversTypes['Product']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  chart?: Resolver<Maybe<ResolversTypes['Chart']>, ParentType, ContextType, Partial<QueryChartArgs>>;
+  charts?: Resolver<Maybe<ResolversTypes['Charts']>, ParentType, ContextType, Partial<QueryChartsArgs>>;
   employee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType, RequireFields<QueryEmployeeArgs, 'id'>>;
   employees?: Resolver<Maybe<ResolversTypes['Employees']>, ParentType, ContextType, Partial<QueryEmployeesArgs>>;
   enumeration?: Resolver<Maybe<ResolversTypes['Enumeration']>, ParentType, ContextType, RequireFields<QueryEnumerationArgs, 'id'>>;
+  product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType, Partial<QueryProductArgs>>;
+  products?: Resolver<Maybe<ResolversTypes['Products']>, ParentType, ContextType, Partial<QueryProductsArgs>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<QueryUserArgs>>;
   users?: Resolver<Maybe<ResolversTypes['Users']>, ParentType, ContextType, Partial<QueryUsersArgs>>;
 };
@@ -580,6 +784,8 @@ export type NumberPaginationResolvers<ContextType = any, ParentType extends Reso
 };
 
 export type Resolvers<ContextType = any> = {
+  Chart?: ChartResolvers<ContextType>;
+  Charts?: ChartsResolvers<ContextType>;
   CompensationItem?: CompensationItemResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   Employee?: EmployeeResolvers<ContextType>;
@@ -587,6 +793,8 @@ export type Resolvers<ContextType = any> = {
   Enumeration?: EnumerationResolvers<ContextType>;
   JSON?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
+  Product?: ProductResolvers<ContextType>;
+  Products?: ProductsResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Response?: ResponseResolvers<ContextType>;
   TimeStamp?: TimeStampResolvers<ContextType>;

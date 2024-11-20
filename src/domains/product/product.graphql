@@ -1,0 +1,59 @@
+type Product {
+  id: Int
+  name: String
+  category: String
+  price: Float
+  description: String
+  image: String
+  quantity: Int
+  sold: Int
+  tags: [String]
+  status: ProductStatus
+  sellerId: Int # User ID of the seller
+}
+
+type Products {
+  rows: [Product]
+  pageInfo: numberPagination
+}
+
+enum ProductStatus {
+  ON_SALE # Available at a discounted price
+  IN_STOCK # Product is available for purchase
+  SOLD_OUT # Product is no longer available
+  OUT_OF_STOCK # Temporarily unavailable but might be restocked
+  DISCONTINUED # Permanently removed from inventory
+}
+
+input ProductInput {
+  name: String
+  category: String
+  price: Float
+  description: String
+  image: String
+  quantity: Int
+  tags: [String]
+}
+
+input ProductsQueryInput {
+  id: Int
+  name: String
+  category: String
+  price: Float
+  description: String
+  image: String
+  quantity: Int
+  sold: Int
+  tags: [String]
+}
+
+type Query {
+  product(id: Int): Product
+  products(input: ProductsQueryInput): Products
+}
+
+type Mutation {
+  createProduct(input: ProductInput): Product
+  updateProduct(id: Int, input: ProductInput): Product
+  updateStatus(id: Int): Response
+}
