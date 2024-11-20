@@ -1,5 +1,5 @@
-import { signIn, signUp } from '../domains/User/user.service'
-import type { Context } from '../plugins/graphql'
+import type { Context } from '..'
+import { signIn, signUp } from '../domains/user/user.service'
 import { ApiResponse } from '../utils/request'
 
 const corsHeaders = {
@@ -14,7 +14,7 @@ export default async (request: Request, ctx: Context) => {
     return new ApiResponse(null, { status: 204, headers: corsHeaders })
   }
 
-  let response
+  let response: any
 
   try {
     const url = new URL(request.url)
