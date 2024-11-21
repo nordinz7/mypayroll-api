@@ -28,16 +28,18 @@ export type Chart = {
   __typename?: 'Chart';
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   id?: Maybe<Scalars['Int']['output']>;
+  product?: Maybe<Product>;
   productId?: Maybe<Scalars['Int']['output']>;
   quantity?: Maybe<Scalars['Int']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
-  userId?: Maybe<Scalars['Int']['output']>;
+  user?: Maybe<User>;
+  userUuid?: Maybe<Scalars['UUID']['output']>;
 };
 
 export type ChartInput = {
   productId?: InputMaybe<Scalars['Int']['input']>;
   quantity?: InputMaybe<Scalars['Int']['input']>;
-  userId?: InputMaybe<Scalars['Int']['input']>;
+  userUuid?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type Charts = {
@@ -47,8 +49,10 @@ export type Charts = {
 };
 
 export type ChartsQueryInput = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   productId?: InputMaybe<Scalars['Int']['input']>;
-  userId?: InputMaybe<Scalars['Int']['input']>;
+  userUuid?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type CompensationItem = {
@@ -277,7 +281,8 @@ export type Product = {
   name?: Maybe<Scalars['String']['output']>;
   price?: Maybe<Scalars['Float']['output']>;
   quantity?: Maybe<Scalars['Int']['output']>;
-  sellerId?: Maybe<Scalars['Int']['output']>;
+  seller?: Maybe<User>;
+  sellerUuid?: Maybe<Scalars['UUID']['output']>;
   sold?: Maybe<Scalars['Int']['output']>;
   status?: Maybe<ProductStatus>;
   tags?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
@@ -612,10 +617,12 @@ export type ResolversParentTypes = {
 export type ChartResolvers<ContextType = any, ParentType extends ResolversParentTypes['Chart'] = ResolversParentTypes['Chart']> = {
   createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType>;
   productId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   quantity?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  userId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  userUuid?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -713,7 +720,8 @@ export type ProductResolvers<ContextType = any, ParentType extends ResolversPare
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   price?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   quantity?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  sellerId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  seller?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  sellerUuid?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
   sold?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['ProductStatus']>, ParentType, ContextType>;
   tags?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;

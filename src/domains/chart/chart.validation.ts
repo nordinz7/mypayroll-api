@@ -8,14 +8,14 @@ const view = Joi.object({
 const index = Joi.object({
   input: Joi.object({
     productId: Joi.number().optional(),
-    userId: Joi.number().required(),
+    userUuid: Joi.number().required(),
     limit: Joi.number().default(20),
     offset: Joi.number().default(0),
   })
 })
 
 const commonMutation = Joi.object({
-  userId: Joi.number().required(),
+  userUuid: Joi.number().required(),
   productId: Joi.number().required(),
   quantity: Joi.number().required(),
 })

@@ -1,8 +1,10 @@
 type Chart {
   id: Int
-  productId: Int
   quantity: Int
-  userId: Int
+  product: Product
+  user: User
+  productId: Int
+  userUuid: UUID
   createdAt: DateTime
   updatedAt: DateTime
 }
@@ -14,7 +16,7 @@ type Charts {
 
 input ChartsQueryInput {
   productId: Int
-  userId: Int
+  userUuid: UUID
   limit: Int
   offset: Int
 }
@@ -22,7 +24,7 @@ input ChartsQueryInput {
 input ChartInput {
   productId: Int
   quantity: Int
-  userId: Int
+  userUuid: UUID
 }
 
 type Query {

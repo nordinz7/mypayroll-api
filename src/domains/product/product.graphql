@@ -9,7 +9,8 @@ type Product {
   sold: Int
   tags: [String]
   status: ProductStatus
-  sellerId: Int # User ID of the seller
+  sellerUuid: UUID # User ID of the seller
+  seller: User # User selling the product
 }
 
 type Products {
