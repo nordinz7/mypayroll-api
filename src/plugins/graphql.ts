@@ -7,16 +7,12 @@ import { decodeJWT } from '../utils/auth'
 
 const injectCtx = async (params: YogaInitialContext) => {
   const { request } = params
-
-  const obj = {}
-  const { headers } = request || {} // @ts-ignore
-  const authHeader = headers?.authorization || ''
+  const authHeader = request.headers.get('authorization') || ''
   const token = authHeader.split(' ')[1]
 
   const decoded = await decodeJWT(token, true)
 
   return {
-    ...obj,
     user: decoded
   }
 }
@@ -32,6 +28,10 @@ export default (ctx: Record<string, any> = {}) => {
     graphiql: true,
     context: (initialContext: YogaInitialContext) => {
       return { ...ctx, ...injectCtx(initialContext) }
+    },
+    cors: {
+      allowedHeaders: ['authorization'],
+      origin: '*',
     },
     maskedErrors: config.NODE_ENV === 'production',
   })

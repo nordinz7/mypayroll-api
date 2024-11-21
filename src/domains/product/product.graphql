@@ -37,15 +37,13 @@ input ProductInput {
 }
 
 input ProductsQueryInput {
-  id: Int
   name: String
-  category: String
-  price: Float
-  description: String
-  image: String
-  quantity: Int
-  sold: Int
+  status: ProductStatus
+  categories: [String]
   tags: [String]
+  sellerUuids: [UUID]
+  limit: Int
+  offset: Int
 }
 
 type Query {
@@ -56,5 +54,5 @@ type Query {
 type Mutation {
   createProduct(input: ProductInput): Product
   updateProduct(id: Int, input: ProductInput): Product
-  updateStatus(id: Int): Response
+  updateProductStatus(id: Int): Response
 }

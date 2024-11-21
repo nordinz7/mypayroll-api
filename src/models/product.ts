@@ -9,7 +9,8 @@ export default (sequelize: Sequelize) => sequelize.define('product', {
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
   category: {
     type: DataTypes.STRING,

@@ -28,8 +28,8 @@ let cacheInstance: ServerInstance['cache']
 
 export const fetchWrapper = async (request: Request, misc: any): Promise<any> => {
   const ctx = { sequelize: dbInstance, cache: cacheInstance }
-
   if (request.url.includes('/graphql')) {
+    console.log('--------rr', request)
     return graphqlPlugin(ctx)(request, misc)
   }
 

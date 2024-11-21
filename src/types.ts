@@ -180,7 +180,7 @@ export type Mutation = {
   updateEmployee?: Maybe<Employee>;
   updateEnumeration?: Maybe<Enumeration>;
   updateProduct?: Maybe<Product>;
-  updateStatus?: Maybe<Response>;
+  updateProductStatus?: Maybe<Response>;
   updateUser?: Maybe<User>;
 };
 
@@ -263,7 +263,7 @@ export type MutationUpdateProductArgs = {
 };
 
 
-export type MutationUpdateStatusArgs = {
+export type MutationUpdateProductStatusArgs = {
   id?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -313,14 +313,12 @@ export type Products = {
 };
 
 export type ProductsQueryInput = {
-  category?: InputMaybe<Scalars['String']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['Int']['input']>;
-  image?: InputMaybe<Scalars['String']['input']>;
+  categories?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
-  price?: InputMaybe<Scalars['Float']['input']>;
-  quantity?: InputMaybe<Scalars['Int']['input']>;
-  sold?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sellerUuids?: InputMaybe<Array<InputMaybe<Scalars['UUID']['input']>>>;
+  status?: InputMaybe<ProductStatus>;
   tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
@@ -708,7 +706,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateEmployee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType, Partial<MutationUpdateEmployeeArgs>>;
   updateEnumeration?: Resolver<Maybe<ResolversTypes['Enumeration']>, ParentType, ContextType, RequireFields<MutationUpdateEnumerationArgs, 'input'>>;
   updateProduct?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType, Partial<MutationUpdateProductArgs>>;
-  updateStatus?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, Partial<MutationUpdateStatusArgs>>;
+  updateProductStatus?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, Partial<MutationUpdateProductStatusArgs>>;
   updateUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<MutationUpdateUserArgs>>;
 };
 
