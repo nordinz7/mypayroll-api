@@ -39,7 +39,6 @@ const update = Joi.object({
 
 const productValidation = {
   validate: (schema: string, data: any) => {
-    console.log('--------schema', schema, data)
     let result: { error: any, value?: any };
     switch (schema) {
       case 'view':

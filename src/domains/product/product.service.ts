@@ -9,7 +9,14 @@ export const productService = (ctx: Context) => {
     view: async (args: QueryProductArgs) => {
       const { id } = productValidation.validate('view', args)
 
-      const product = await ctx.sequelize.models.product.findByPk(id)
+      const product = await ctx.sequelize.models.product.findByPk(id, {
+        include: [
+          {
+            model: ctx.sequelize.models.user,
+            as: 'seller'
+          }
+        ]
+      })
 
       if (!product) {
         throw SevenBoom.notFound('Product not found')
@@ -29,9 +36,10 @@ export const productService = (ctx: Context) => {
       return { rows, pageInfo: { count, limit, offset } }
     },
     create: async (args: MutationCreateProductArgs) => {
-      const { input } = productValidation.validate('create', args)
-      console.log('--------input', input)
-      return ctx.sequelize.models.product.upsert(input)
+      let { input } = productValidation.validate('create', args)
+      input = Object.assign(input, { sellerUuid: ctx.user?.user?.uuid })
+      const res = await ctx.sequelize.models.product.create(input)
+      return res.toJSON()
     },
     update: async (args: MutationUpdateProductArgs) => {
       const { id, ...input } = productValidation.validate('update', args)

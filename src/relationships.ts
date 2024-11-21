@@ -14,5 +14,5 @@ export default (sequelize: Sequelize) => {
   product.hasOne(chart, { foreignKey: { allowNull: false } })
   user.hasMany(chart, { foreignKey: { allowNull: false } })
 
-  user.hasMany(product, { foreignKey: { name: 'sellerUuid', allowNull: false } })
+  user.hasMany(product, { as: 'seller', foreignKey: { allowNull: false } })
 }

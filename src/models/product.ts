@@ -17,7 +17,7 @@ export default (sequelize: Sequelize) => sequelize.define('product', {
     allowNull: false
   },
   price: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.FLOAT,
     allowNull: false
   },
   description: {
@@ -34,15 +34,17 @@ export default (sequelize: Sequelize) => sequelize.define('product', {
   },
   sold: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
+    defaultValue: 0
   },
   tags: {
     type: DataTypes.ARRAY(DataTypes.STRING),
-    allowNull: true
+    defaultValue: []
   },
   status: {
     type: DataTypes.ENUM,
     values: Object.values(ProductStatus),
-    allowNull: false
+    allowNull: false,
+    defaultValue: ProductStatus.InStock
   }
 })

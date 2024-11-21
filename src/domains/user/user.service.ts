@@ -6,6 +6,7 @@ import { Op } from 'sequelize'
 import { validateUserInput } from './helper'
 import { signJWT } from '../../utils/auth'
 import { compare } from 'bcryptjs'
+import { pick } from 'lodash'
 
 export const getUser = async (uuid: string, ctx: Context) => {
   if (!uuid) {
@@ -125,7 +126,7 @@ export const signIn = async (input: SignInInput, ctx: Context) => {
     throw SevenBoom.badRequest('Invalid password')
   }
 
-  const jwt = await signJWT({ user: user.dataValues })
+  const jwt = await signJWT({ user: pick(user.toJSON(), ['uuid', 'email', 'name']) })
 
   return { jwt }
 }

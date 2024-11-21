@@ -13,7 +13,6 @@ export default {
   },
   Mutation: {
     createProduct: async (_: any, args: MutationCreateProductArgs, context: Context) => {
-      console.log('--------args..', args)
       return productService(context).create(args)
     },
     updateProduct: async (_: any, args: MutationUpdateProductArgs, context: Context) => {

@@ -1,23 +1,12 @@
-import { createYoga, createSchema, type YogaInitialContext } from 'graphql-yoga'
+import { createYoga, createSchema } from 'graphql-yoga'
 import { loadFilesSync } from '@graphql-tools/load-files'
 import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge'
 import path from 'path'
 import config from '../../config'
-import { decodeJWT } from '../utils/auth'
 
-const injectCtx = async (params: YogaInitialContext) => {
-  const { request } = params
-  const authHeader = request.headers.get('authorization') || ''
-  const token = authHeader.split(' ')[1]
 
-  const decoded = await decodeJWT(token, true)
 
-  return {
-    user: decoded
-  }
-}
-
-export default (ctx: Record<string, any> = {}) => {
+export default (ctx: any) => {
   const typesArray = loadFilesSync(path.resolve(__dirname, '../domains'), { extensions: ['graphql'], recursive: true })
   const typeDefs: any = mergeTypeDefs(typesArray)
   const resolversArray = loadFilesSync(path.resolve(__dirname, '../domains/**/*.resolvers.*'), { extensions: ['ts'], recursive: true })
@@ -26,13 +15,7 @@ export default (ctx: Record<string, any> = {}) => {
   return createYoga({
     schema: createSchema({ typeDefs, resolvers }),
     graphiql: true,
-    context: (initialContext: YogaInitialContext) => {
-      return { ...ctx, ...injectCtx(initialContext) }
-    },
-    cors: {
-      allowedHeaders: ['authorization'],
-      origin: '*',
-    },
+    context: ctx,
     maskedErrors: config.NODE_ENV === 'production',
   })
 }

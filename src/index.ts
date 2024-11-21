@@ -8,6 +8,7 @@ import { ApiResponse } from './utils/request'
 import type Redis from 'ioredis'
 import { CacheSingleton } from './utils/cache'
 import type { User } from './types'
+import { decodeJWT } from './utils/auth'
 
 export type ServerInstance = {
   server: Server
@@ -25,12 +26,22 @@ let serverInstance: ServerInstance['server']
 let dbInstance: ServerInstance['db']
 let cacheInstance: ServerInstance['cache']
 
+const getUserFromToken = async (request: Request) => {
+  const authHeader = request.headers.get('authorization') || ''
+  const token = authHeader.split(' ')[1]
+
+  const decoded = await decodeJWT(token, true)
+
+  return { //@ts-ignore
+    user: decoded?.user
+  }
+}
 
 export const fetchWrapper = async (request: Request, misc: any): Promise<any> => {
-  const ctx = { sequelize: dbInstance, cache: cacheInstance }
+  const ctx = { sequelize: dbInstance, cache: cacheInstance, user: await getUserFromToken(request) }
+
   if (request.url.includes('/graphql')) {
-    console.log('--------rr', request)
-    return graphqlPlugin(ctx)(request, misc)
+    return graphqlPlugin(ctx)(request, { ...misc, context: ctx })
   }
 
   return routes(request, ctx)
