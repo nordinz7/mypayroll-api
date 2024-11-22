@@ -14,5 +14,5 @@ export default (sequelize: Sequelize) => {
   chart.belongsTo(product, { foreignKey: { allowNull: false } })
   chart.belongsTo(user, { as: 'customer', foreignKey: { allowNull: false } })
 
-  product.belongsTo(user, { as: 'seller', foreignKey: { name: 'sellerUuid', allowNull: false } })
+  product.belongsTo(user, { as: 'seller', foreignKey: { allowNull: false } })
 }

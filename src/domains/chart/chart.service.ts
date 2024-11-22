@@ -7,9 +7,16 @@ export const chartService = (ctx: Context) => {
   return {
     getById: async (id: number) => ctx.sequelize.models.chart.findByPk(id),
     view: async (args: QueryChartArgs) => {
-      const { id } = chartValidation.validate('view', args)
+      const { id, productId } = chartValidation.validate('view', args)
 
-      const chart = await ctx.sequelize.models.chart.findByPk(id)
+      const chart = await ctx.sequelize.models.chart.findByPk(id, {
+        include: [
+          { model: ctx.sequelize.models.product },
+          { model: ctx.sequelize.models.user, as: 'customer' }
+        ],
+        raw: true,
+        nest: true
+      })
 
       if (!chart) {
         throw SevenBoom.notFound('Chart not found')
@@ -29,9 +36,18 @@ export const chartService = (ctx: Context) => {
       return { rows, pageInfo: { count, limit, offset } }
     },
     create: async (args: MutationAddChartArgs) => {
-      const input = chartValidation.validate('create', args)
+      Object.assign(args.input, { customerUuid: ctx.user.user.uuid })
 
-      return ctx.sequelize.models.chart.upsert(input)
+      const { input } = chartValidation.validate('create', args)
+      const { quantity, ...where } = input
+
+      const chart = await ctx.sequelize.models.chart.findOne(where)
+
+      if (chart) {
+        throw SevenBoom.badRequest('Item Already added to chart')
+      }
+
+      return ctx.sequelize.models.chart.create(input)
     },
     update: async (args: MutationUpdateChartArgs) => {
       const { id, ...input } = chartValidation.validate('update', args)

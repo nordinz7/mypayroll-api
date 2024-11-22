@@ -28,18 +28,18 @@ export type Chart = {
   __typename?: 'Chart';
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   customer?: Maybe<User>;
+  customerUuid?: Maybe<Scalars['UUID']['output']>;
   id?: Maybe<Scalars['Int']['output']>;
   product?: Maybe<Product>;
   productId?: Maybe<Scalars['Int']['output']>;
   quantity?: Maybe<Scalars['Int']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
-  userUuid?: Maybe<Scalars['UUID']['output']>;
 };
 
 export type ChartInput = {
+  customerUuid?: InputMaybe<Scalars['UUID']['input']>;
   productId?: InputMaybe<Scalars['Int']['input']>;
   quantity?: InputMaybe<Scalars['Int']['input']>;
-  userUuid?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type Charts = {
@@ -49,10 +49,10 @@ export type Charts = {
 };
 
 export type ChartsQueryInput = {
+  customerUuid?: InputMaybe<Scalars['UUID']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   productId?: InputMaybe<Scalars['Int']['input']>;
-  userUuid?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type CompensationItem = {
@@ -338,6 +338,7 @@ export type Query = {
 
 export type QueryChartArgs = {
   id?: InputMaybe<Scalars['Int']['input']>;
+  productId?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -615,12 +616,12 @@ export type ResolversParentTypes = {
 export type ChartResolvers<ContextType = any, ParentType extends ResolversParentTypes['Chart'] = ResolversParentTypes['Chart']> = {
   createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   customer?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  customerUuid?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
   id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType>;
   productId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   quantity?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  userUuid?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

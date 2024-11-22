@@ -31,7 +31,7 @@ export const DbSingletonSql = (function () {
         relationships(sequelize)
         await initMigration(sequelize)
         console.log('Migrations initialized')
-        await sequelize.sync()
+        await sequelize.sync({ alter: config.NODE_ENV === 'development' })
         console.log('Database synchronized')
         instance = sequelize
       } catch (error) {
