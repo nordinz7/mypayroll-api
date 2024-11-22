@@ -10,12 +10,7 @@ export const productService = (ctx: Context) => {
       const { id } = productValidation.validate('view', args)
 
       const product = await ctx.sequelize.models.product.findByPk(id, {
-        include: [
-          {
-            model: ctx.sequelize.models.user,
-            as: 'seller'
-          }
-        ]
+        include: [{ model: ctx.sequelize.models.user, as: 'seller' }]
       })
 
       if (!product) {
@@ -38,6 +33,7 @@ export const productService = (ctx: Context) => {
     create: async (args: MutationCreateProductArgs) => {
       let { input } = productValidation.validate('create', args)
       input = Object.assign(input, { sellerUuid: ctx.user?.user?.uuid })
+      console.log('--------input', input)
       const res = await ctx.sequelize.models.product.create(input)
       return res.toJSON()
     },

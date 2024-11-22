@@ -11,8 +11,8 @@ export default (sequelize: Sequelize) => {
   employee.belongsTo(user)
 
   // Add product relationship
-  product.hasOne(chart, { foreignKey: { allowNull: false } })
-  user.hasMany(chart, { foreignKey: { allowNull: false } })
+  chart.belongsTo(product, { foreignKey: { allowNull: false } })
+  chart.belongsTo(user, { as: 'customer', foreignKey: { allowNull: false } })
 
-  user.hasMany(product, { as: 'seller', foreignKey: { allowNull: false } })
+  product.belongsTo(user, { as: 'seller', foreignKey: { name: 'sellerUuid', allowNull: false } })
 }

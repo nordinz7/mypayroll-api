@@ -2,7 +2,7 @@ type Chart {
   id: Int
   quantity: Int
   product: Product
-  user: User
+  customer: User
   productId: Int
   userUuid: UUID
   createdAt: DateTime
