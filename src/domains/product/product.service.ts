@@ -7,6 +7,8 @@ export const productService = (ctx: Context) => {
   return {
     getById: async (id: number) => ctx.sequelize.models.product.findByPk(id),
     view: async (args: QueryProductArgs) => {
+      await ctx.checkAuth()
+
       const { id } = productValidation.validate('view', args)
 
       const product = await ctx.sequelize.models.product.findByPk(id, {
@@ -20,6 +22,8 @@ export const productService = (ctx: Context) => {
       return product
     },
     index: async (args: QueryProductsArgs) => {
+      await ctx.checkAuth()
+
       const { limit, offset, ...where } = productValidation.validate('index', args)
 
       const { count, rows = [] } = await ctx.sequelize.models.product.findAndCountAll({
@@ -31,13 +35,18 @@ export const productService = (ctx: Context) => {
       return { rows, pageInfo: { count, limit, offset } }
     },
     create: async (args: MutationCreateProductArgs) => {
+      await ctx.checkAuth()
+
       let { input } = productValidation.validate('create', args)
-      input = Object.assign(input, { sellerUuid: ctx.user?.user?.uuid })
-      console.log('--------input', input)
+      input = Object.assign(input, { sellerUuid: ctx.user?.uuid })
+
       const res = await ctx.sequelize.models.product.create(input)
+
       return res.toJSON()
     },
     update: async (args: MutationUpdateProductArgs) => {
+      await ctx.checkAuth()
+
       const { id, ...input } = productValidation.validate('update', args)
 
       const product = await ctx.sequelize.models.product.findByPk(id)
@@ -49,6 +58,8 @@ export const productService = (ctx: Context) => {
       return product.update(input)
     },
     updateStatus: async (args: MutationUpdateProductStatusArgs) => {
+      await ctx.checkAuth()
+
       const { id } = productValidation.validate('view', args)
 
       const product = await ctx.sequelize.models.product.findByPk(id)

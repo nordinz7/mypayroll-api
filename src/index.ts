@@ -8,7 +8,8 @@ import { ApiResponse } from './utils/request'
 import type Redis from 'ioredis'
 import { CacheSingleton } from './utils/cache'
 import type { User } from './types'
-import { decodeJWT } from './utils/auth'
+import { getUserFromToken, isAuthenticated } from './utils/auth'
+import { SevenBoom } from 'graphql-apollo-errors'
 
 export type ServerInstance = {
   server: Server
@@ -20,27 +21,33 @@ export type Context = {
   sequelize: Sequelize
   cache: Redis
   user?: User
+  checkAuth: () => void
 }
 
 let serverInstance: ServerInstance['server']
 let dbInstance: ServerInstance['db']
 let cacheInstance: ServerInstance['cache']
 
-const getUserFromToken = async (request: Request) => {
-  const authHeader = request.headers.get('authorization') || ''
-  const token = authHeader.split(' ')[1]
 
-  const decoded = await decodeJWT(token, true)
-
-  return { //@ts-ignore
-    user: decoded?.user
-  }
-}
 
 export const fetchWrapper = async (request: Request, misc: any): Promise<any> => {
-  const ctx = { sequelize: dbInstance, cache: cacheInstance, user: await getUserFromToken(request) }
+  const ctx: any = { sequelize: dbInstance, cache: cacheInstance }
+
+  const checkAuth = async (): Promise<void> => {
+    const isAuth = await isAuthenticated(request, ctx)
+
+    if (!isAuth.success || isAuth.error) {
+      throw SevenBoom.unauthorized(isAuth.error?.message || 'Unauthorized')
+    }
+  }
+
+  ctx.checkAuth = checkAuth
 
   if (request.url.includes('/graphql')) {
+    const { user } = await getUserFromToken(request, false, ctx)
+
+    ctx.user = user
+
     return graphqlPlugin(ctx)(request, { ...misc, context: ctx })
   }
 

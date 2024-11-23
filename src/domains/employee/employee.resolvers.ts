@@ -12,7 +12,7 @@ export default {
       }
       const cacheKey = `employee:${id}`
       const cached = await ctx.cache.get(cacheKey)
-      console.log('--------cached', cached)
+
       if (cached) {
         return cached
       }

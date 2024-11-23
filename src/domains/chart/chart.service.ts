@@ -36,12 +36,12 @@ export const chartService = (ctx: Context) => {
       return { rows, pageInfo: { count, limit, offset } }
     },
     create: async (args: MutationAddChartArgs) => {
-      Object.assign(args.input, { customerUuid: ctx.user.user.uuid })
+      Object.assign(args.input, { customerUuid: ctx.user.uuid })
 
       const { input } = chartValidation.validate('create', args)
       const { quantity, ...where } = input
 
-      const chart = await ctx.sequelize.models.chart.findOne(where)
+      const chart = await ctx.sequelize.models.chart.findOne({ where, raw: true, nest: true })
 
       if (chart) {
         throw SevenBoom.badRequest('Item Already added to chart')

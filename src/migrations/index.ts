@@ -16,7 +16,7 @@ const initMigration = async (sequelize: Sequelize) => {
 
   for (const modelPath of modelPaths) {
     const model = await import(modelPath)
-    console.log('--------model', model)
+
     model.up(sequelize.getQueryInterface(), sequelize)
     // model.default(sequelize)
   }

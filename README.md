@@ -22,3 +22,8 @@ To run test: make sure to create database manually as defined in `POSTGRES_DB_TE
 2. ensure POSTGRES_HOST is set to correct ip address in `.env`
 
 To rebuild restart the container dc down && dc up -d --build
+
+3. ERROR: for mypayroll-api_db_1 'ContainerConfig'
+
+- docker ps -a
+- docker rm <container_id>

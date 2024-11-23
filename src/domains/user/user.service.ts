@@ -1,23 +1,32 @@
 import { SevenBoom } from 'graphql-apollo-errors'
 import { ActiveStatus, type CreateUserInput, type SignInInput, type UpdateUserInput, type UserQueryInput } from '../../types'
-import type { Context } from '../../plugins/graphql'
 import Joi from 'joi'
 import { Op } from 'sequelize'
 import { validateUserInput } from './helper'
 import { signJWT } from '../../utils/auth'
 import { compare } from 'bcryptjs'
 import { pick } from 'lodash'
+import type { Context } from '../..'
 
 export const getUser = async (uuid: string, ctx: Context) => {
   if (!uuid) {
     throw SevenBoom.badData('Missing user uuid')
   }
 
-  const user = await ctx.sequelize.models.user.findByPk(uuid)
+  const cacheKey = `user:${uuid}`
+  const cachedUser = await ctx.cache.get(cacheKey)
+
+  if (cachedUser) {
+    return cachedUser
+  }
+
+  const user = await ctx.sequelize.models.user.findByPk(uuid, { raw: true, nest: true })
 
   if (!user) {
     throw SevenBoom.notFound('User not found')
   }
+
+  await ctx.cache.set(cacheKey, user)
 
   return user
 }
@@ -74,7 +83,7 @@ export const createUser = async (input: CreateUserInput, ctx: Context) => {
 
   const user = await ctx.sequelize.models.user.create({ ...value })
 
-  return user.dataValues
+  return user.toJSON()
 }
 
 export const updateUser = async (input: UpdateUserInput, ctx: Context) => {
@@ -88,19 +97,19 @@ export const updateUser = async (input: UpdateUserInput, ctx: Context) => {
     throw SevenBoom.notFound('User not found')
   }
 
-  return (await user.update({ ...rest })).dataValues
+  return (await user.update({ ...rest })).toJSON()
 }
 
 export const deleteUser = async (uuid: string, ctx: Context) => {
   const user = await getUser(uuid, ctx)
 
-  return (await user.update({ status: ActiveStatus.Deleted })).dataValues
+  return (await user.update({ status: ActiveStatus.Deleted })).toJSON()
 }
 
 export const unDeleteUser = async (uuid: string, ctx: Context) => {
   const user = await getUser(uuid, ctx)
 
-  return (await user.update({ status: ActiveStatus.Active })).dataValues
+  return (await user.update({ status: ActiveStatus.Active })).toJSON()
 }
 
 export const signIn = async (input: SignInInput, ctx: Context) => {
@@ -126,7 +135,11 @@ export const signIn = async (input: SignInInput, ctx: Context) => {
     throw SevenBoom.badRequest('Invalid password')
   }
 
-  const jwt = await signJWT({ user: pick(user.toJSON(), ['uuid', 'email', 'name']) })
+  const storeUser = pick(user.toJSON(), ['uuid', 'email', 'name'])
+
+  await ctx.cache.set(`user:${storeUser.uuid}`, storeUser)
+
+  const jwt = await signJWT({ user: storeUser })
 
   return { jwt }
 }

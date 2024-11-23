@@ -12,7 +12,7 @@ export const CacheSingleton = (function () {
       const cache = new redis({
         host: config.REDIS_HOST,
         port: parseInt(config.REDIS_PORT),
-        password: config.REDIS_PASSWORD
+        password: config.REDIS_PASSWORD,
       })
 
       cache.on('connect', () => {
@@ -27,7 +27,8 @@ export const CacheSingleton = (function () {
       const originalSet = cache.set.bind(cache);
       cache.set = async (key: string, value: any, ...args: any[]): Promise<any> => {
         const stringValue = Array.isArray(value) || typeof value === 'object' ? JSON.stringify(value) : value;
-        return originalSet(key, stringValue, ...args);
+        const defaultArgs = ['EX', config.REDIS_TTL]
+        return originalSet(key, stringValue, ...args.length ? args : defaultArgs);
       };
 
       // Override get method to handle JSON parsing
