@@ -13,7 +13,9 @@ export default {
   POSTGRES_PORT: Bun.env.POSTGRES_PORT || 5432,
 
   REDIS_HOST: Bun.env.REDIS_HOST || 'localhost',
-  REDIS_PORT: Bun.env.REDIS_PORT || 6379,
+  REDIS_PORT: +(Bun.env.REDIS_PORT || 6379),
   REDIS_PASSWORD: Bun.env.REDIS_PASSWORD || 'redis',
-  REDIS_TTL: Bun.env.REDIS_TTL || 60 * 60 * 1,
+  REDIS_TTL: +(Bun.env.REDIS_TTL || 60 * 60 * 1),
+
+  QUEUE_NAME: Bun.env.QUEUE_NAME || 'payroll',
 }

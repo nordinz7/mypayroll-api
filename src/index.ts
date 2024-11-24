@@ -10,16 +10,21 @@ import { CacheSingleton } from './utils/cache'
 import type { User } from './types'
 import { getUserFromToken, isAuthenticated } from './utils/auth'
 import { SevenBoom } from 'graphql-apollo-errors'
+import type { Queue } from 'bullmq'
+import { QueueSingleton } from './utils/queue'
+
 
 export type ServerInstance = {
   server: Server
   db: Sequelize
   cache: Redis
+  queue: Queue
 }
 
 export type Context = {
   sequelize: Sequelize
   cache: Redis
+  queue: Queue
   user?: User
   checkAuth: () => void
 }
@@ -27,11 +32,13 @@ export type Context = {
 let serverInstance: ServerInstance['server']
 let dbInstance: ServerInstance['db']
 let cacheInstance: ServerInstance['cache']
+let queueInstance: ServerInstance['queue']
 
+let ctx: any = {}
 
 
 export const fetchWrapper = async (request: Request, misc: any): Promise<any> => {
-  const ctx: any = { sequelize: dbInstance, cache: cacheInstance }
+  ctx = { sequelize: dbInstance, cache: cacheInstance, queue: queueInstance }
 
   const checkAuth = async (): Promise<void> => {
     const isAuth = await isAuthenticated(request, ctx)
@@ -63,6 +70,10 @@ export const startServer = async (): Promise<ServerInstance> => {
     cacheInstance = await CacheSingleton.getInstance()
   }
 
+  if (!queueInstance) {
+    queueInstance = await QueueSingleton.getInstance({ cache: cacheInstance, sequelize: dbInstance })
+  }
+
   if (!serverInstance) {
     serverInstance = Bun.serve({
       port: config.PORT,
@@ -79,7 +90,7 @@ export const startServer = async (): Promise<ServerInstance> => {
     console.log(`\x1b[${color}%s\x1b[0m`, `Listening on http://${config.HOSTNAME}:${serverInstance.port} on ${config.NODE_ENV} mode`)
   }
 
-  return { server: serverInstance, db: dbInstance, cache: cacheInstance }
+  return { server: serverInstance, db: dbInstance, cache: cacheInstance, queue: queueInstance }
 }
 
 await startServer()

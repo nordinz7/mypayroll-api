@@ -47,7 +47,7 @@ export const productService = (ctx: Context) => {
     update: async (args: MutationUpdateProductArgs) => {
       await ctx.checkAuth()
 
-      const { id, ...input } = productValidation.validate('update', args)
+      const { id, input } = productValidation.validate('update', args)
 
       const product = await ctx.sequelize.models.product.findByPk(id)
 
@@ -55,7 +55,11 @@ export const productService = (ctx: Context) => {
         throw SevenBoom.notFound('Product not found')
       }
 
-      return product.update(input)
+      const res = await product.update(input)
+
+      await ctx.queue.add('updateProductPrice', { customerUuid: ctx.user?.uuid, productId: id })
+
+      return res
     },
     updateStatus: async (args: MutationUpdateProductStatusArgs) => {
       await ctx.checkAuth()
@@ -68,7 +72,11 @@ export const productService = (ctx: Context) => {
         throw SevenBoom.notFound('Product not found')
       }
 
-      return product.destroy()
+      const res = product.destroy()
+
+      await ctx.queue.add('updateProductPrice', { customerUuid: ctx.user?.uuid, productId: id })
+
+      return res
     }
   }
 }

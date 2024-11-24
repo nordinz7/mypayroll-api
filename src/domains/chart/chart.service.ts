@@ -1,11 +1,23 @@
 import { SevenBoom } from "graphql-apollo-errors";
 import type { Context } from "../..";
 import chartValidation from "./chart.validation";
-import type { MutationDeleteProductFromChartArgs, MutationUpsertProductToChartArgs, QueryChartArgs } from "../../types";
+import { ProductStatus, type ChartProduct, type MutationDeleteProductFromChartArgs, type MutationUpsertProductToChartArgs, type QueryChartArgs } from "../../types";
 import type { Includeable } from "sequelize/lib/model";
 import { defaults } from "lodash";
 
 export const chartService = (ctx: Context) => {
+  const include = [
+    {
+      model: ctx.sequelize.models.chartProduct,
+      as: 'products',
+      include: [
+        {
+          model: ctx.sequelize.models.product,
+          as: 'product'
+        }
+      ]
+    }
+  ]
 
   const getChart = async (input: QueryChartArgs, opts?: { raw?: boolean, include?: Includeable | Includeable[], upsert?: boolean }) => {
     const where = chartValidation.validate('view', input)
@@ -31,18 +43,7 @@ export const chartService = (ctx: Context) => {
     if (!chartId) return null
 
     const chart = await ctx.sequelize.models.chart.findByPk(chartId, {
-      include: [
-        {
-          model: ctx.sequelize.models.chartProduct,
-          as: 'products',
-          include: [
-            {
-              model: ctx.sequelize.models.product,
-              as: 'product'
-            }
-          ]
-        }
-      ],
+      include
     })
 
     const convertedChart = chart?.toJSON()
@@ -51,8 +52,13 @@ export const chartService = (ctx: Context) => {
       throw SevenBoom.notFound('Chart not found')
     }
 
-    const totalPrice = convertedChart.products.reduce((acc, chartProduct) => {
-      return acc + (chartProduct.product.price || 0) * (chartProduct.quantity || 0)
+    const totalPrice = convertedChart.products.reduce((acc: number, chartProduct: ChartProduct) => {
+      if (
+        chartProduct?.product?.status &&
+        ![ProductStatus.InStock, ProductStatus.OnSale].includes(chartProduct.product.status)
+      ) return acc
+
+      return acc + (chartProduct?.product?.price || 0) * (chartProduct.quantity || 0)
     }, 0)
 
     const updatedChart = await chart.update({ totalPrice })
@@ -61,6 +67,7 @@ export const chartService = (ctx: Context) => {
   }
 
   return {
+    include,
     getChart,
     recomputeTotalPrice,
     view: async (args: QueryChartArgs) => {
