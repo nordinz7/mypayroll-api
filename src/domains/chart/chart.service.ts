@@ -27,8 +27,42 @@ export const chartService = (ctx: Context) => {
     return opts.raw ? chart?.toJSON() : chart
   }
 
+  const recomputeTotalPrice = async (chartId: number) => {
+    if (!chartId) return null
+
+    const chart = await ctx.sequelize.models.chart.findByPk(chartId, {
+      include: [
+        {
+          model: ctx.sequelize.models.chartProduct,
+          as: 'products',
+          include: [
+            {
+              model: ctx.sequelize.models.product,
+              as: 'product'
+            }
+          ]
+        }
+      ],
+    })
+
+    const convertedChart = chart?.toJSON()
+
+    if (!chart || !convertedChart) {
+      throw SevenBoom.notFound('Chart not found')
+    }
+
+    const totalPrice = convertedChart.products.reduce((acc, chartProduct) => {
+      return acc + (chartProduct.product.price || 0) * (chartProduct.quantity || 0)
+    }, 0)
+
+    const updatedChart = await chart.update({ totalPrice })
+
+    return updatedChart.toJSON()
+  }
+
   return {
     getChart,
+    recomputeTotalPrice,
     view: async (args: QueryChartArgs) => {
       args.customerUuid = ctx.user?.uuid
 
@@ -66,22 +100,7 @@ export const chartService = (ctx: Context) => {
         await ctx.sequelize.models.chartProduct.create({ ...input, chartId })
       }
 
-      const updatedChart = await ctx.sequelize.models.chart.findByPk(chartId, {
-        include: [
-          {
-            model: ctx.sequelize.models.chartProduct,
-            as: 'products',
-            include: [
-              {
-                model: ctx.sequelize.models.product,
-                as: 'product'
-              }
-            ]
-          }
-        ],
-      });
-
-      return updatedChart?.toJSON()
+      return recomputeTotalPrice(chartId)
     },
     delete: async (args: MutationDeleteProductFromChartArgs) => {
       await ctx.checkAuth()
@@ -102,20 +121,7 @@ export const chartService = (ctx: Context) => {
 
       await chartProduct.destroy()
 
-      return chart.reload({
-        include: [
-          {
-            model: ctx.sequelize.models.chartProduct,
-            as: 'products',
-            include: [
-              {
-                model: ctx.sequelize.models.product,
-                as: 'product'
-              }
-            ]
-          }
-        ],
-      })
+      return recomputeTotalPrice(chart.dataValues.id)
     }
   }
 }
