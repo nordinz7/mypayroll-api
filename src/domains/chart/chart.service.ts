@@ -1,22 +1,40 @@
 import { SevenBoom } from "graphql-apollo-errors";
 import type { Context } from "../..";
-import type { MutationAddChartArgs, MutationDeleteChartArgs, MutationUpdateChartArgs, QueryChartArgs, QueryChartsArgs } from "../../types";
 import chartValidation from "./chart.validation";
+import type { MutationDeleteProductFromChartArgs, MutationUpsertProductToChartArgs, QueryChartArgs } from "../../types";
+import type { Includeable } from "sequelize/lib/model";
+import { defaults } from "lodash";
 
 export const chartService = (ctx: Context) => {
-  return {
-    getById: async (id: number) => ctx.sequelize.models.chart.findByPk(id),
-    view: async (args: QueryChartArgs) => {
-      const { id, productId } = chartValidation.validate('view', args)
 
-      const chart = await ctx.sequelize.models.chart.findByPk(id, {
-        include: [
-          { model: ctx.sequelize.models.product },
-          { model: ctx.sequelize.models.user, as: 'customer' }
-        ],
-        raw: true,
-        nest: true
-      })
+  const getChart = async (input: QueryChartArgs, opts?: { raw?: boolean, include?: Includeable | Includeable[], upsert?: boolean }) => {
+    const where = chartValidation.validate('view', input)
+
+    const params: any = { where }
+
+    opts = defaults(opts, { raw: true, include: [], upsert: false })
+
+    if (Array.isArray(opts.include) && opts.include.length || opts.include) {
+      params.include = opts.include
+    }
+
+    let chart = await ctx.sequelize.models.chart.findOne(params)
+
+    if (!chart && opts.upsert) {
+      chart = await ctx.sequelize.models.chart.create({ customerUuid: input.customerUuid })
+    }
+
+    return opts.raw ? chart?.toJSON() : chart
+  }
+
+  return {
+    getChart,
+    view: async (args: QueryChartArgs) => {
+      args.customerUuid = ctx.user?.uuid
+
+      const where = chartValidation.validate('view', args)
+
+      const chart = await ctx.sequelize.models.chart.findOne({ where, include: 'product' })
 
       if (!chart) {
         throw SevenBoom.notFound('Chart not found')
@@ -24,52 +42,80 @@ export const chartService = (ctx: Context) => {
 
       return chart
     },
-    index: async (args: QueryChartsArgs) => {
-      const { limit, offset, ...where } = chartValidation.validate('index', args)
+    upsert: async (args: MutationUpsertProductToChartArgs) => {
+      await ctx.checkAuth()
 
-      const { count, rows = [] } = await ctx.sequelize.models.chart.findAndCountAll({
-        where,
-        limit,
-        offset
+      Object.assign(args?.input, { customerUuid: ctx.user?.uuid })
+
+      const { input } = chartValidation.validate('upsert', args)
+
+      const chart = await getChart({ customerUuid: input.customerUuid }, { raw: false, upsert: true })
+
+      const chartId = chart.dataValues.id
+
+      const where = {
+        chartId,
+        productId: input.productId,
+      }
+
+      const chartProduct = await ctx.sequelize.models.chartProduct.findOne({ where })
+
+      if (chartProduct) {
+        await chartProduct.update({ quantity: input.quantity })
+      } else {
+        await ctx.sequelize.models.chartProduct.create({ ...input, chartId })
+      }
+
+      const updatedChart = await ctx.sequelize.models.chart.findByPk(chartId, {
+        include: [
+          {
+            model: ctx.sequelize.models.chartProduct,
+            as: 'products',
+            include: [
+              {
+                model: ctx.sequelize.models.product,
+                as: 'product'
+              }
+            ]
+          }
+        ],
+      });
+
+      return updatedChart?.toJSON()
+    },
+    delete: async (args: MutationDeleteProductFromChartArgs) => {
+      await ctx.checkAuth()
+
+      const { productId } = chartValidation.validate('delete', args)
+
+      const chart = await ctx.sequelize.models.chart.findOne({ where: { customerUuid: ctx.user?.uuid } })
+
+      if (!chart) {
+        throw SevenBoom.notFound('Chart not found')
+      }
+
+      const chartProduct = await ctx.sequelize.models.chartProduct.findOne({ where: { chartId: chart.dataValues.id, productId } })
+
+      if (!chartProduct) {
+        throw SevenBoom.notFound('Product not found in chart')
+      }
+
+      await chartProduct.destroy()
+
+      return chart.reload({
+        include: [
+          {
+            model: ctx.sequelize.models.chartProduct,
+            as: 'products',
+            include: [
+              {
+                model: ctx.sequelize.models.product,
+                as: 'product'
+              }
+            ]
+          }
+        ],
       })
-
-      return { rows, pageInfo: { count, limit, offset } }
-    },
-    create: async (args: MutationAddChartArgs) => {
-      Object.assign(args.input, { customerUuid: ctx.user.uuid })
-
-      const { input } = chartValidation.validate('create', args)
-      const { quantity, ...where } = input
-
-      const chart = await ctx.sequelize.models.chart.findOne({ where, raw: true, nest: true })
-
-      if (chart) {
-        throw SevenBoom.badRequest('Item Already added to chart')
-      }
-
-      return ctx.sequelize.models.chart.create(input)
-    },
-    update: async (args: MutationUpdateChartArgs) => {
-      const { id, ...input } = chartValidation.validate('update', args)
-
-      const chart = await ctx.sequelize.models.chart.findByPk(id)
-
-      if (!chart) {
-        throw SevenBoom.notFound('Chart not found')
-      }
-
-      return chart.update(input)
-    },
-    delete: async (args: MutationDeleteChartArgs) => {
-      const { id } = chartValidation.validate('view', args)
-
-      const chart = await ctx.sequelize.models.chart.findByPk(id)
-
-      if (!chart) {
-        throw SevenBoom.notFound('Chart not found')
-      }
-
-      return chart.destroy()
     }
   }
 }

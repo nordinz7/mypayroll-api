@@ -1,39 +1,35 @@
-type Chart {
+type ChartProduct {
   id: Int
   quantity: Int
-  product: Product
-  customer: User
+  chartId: Int
   productId: Int
-  customerUuid: UUID
+  product: Product
   createdAt: DateTime
   updatedAt: DateTime
 }
 
-type Charts {
-  rows: [Chart]
-  pageInfo: numberPagination
-}
-
-input ChartsQueryInput {
-  productId: Int
+type Chart {
+  id: Int
+  products: [ChartProduct]
+  totalPrice: Float
   customerUuid: UUID
-  limit: Int
-  offset: Int
+  customer: User
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
-input ChartInput {
+input ChartProductInput {
+  customerUuid: UUID
   productId: Int
   quantity: Int
-  customerUuid: UUID
+  chartId: Int
 }
 
 type Query {
-  chart(id: Int, productId: Int): Chart
-  charts(input: ChartsQueryInput): Charts
+  chart(id: Int, customerUuid: UUID): Chart
 }
 
 type Mutation {
-  addChart(input: ChartInput): Chart
-  updateChart(id: Int, input: ChartInput): Chart
-  deleteChart(id: Int): Response
+  upsertProductToChart(input: ChartProductInput): Chart
+  deleteProductFromChart(productId: Int): Chart
 }

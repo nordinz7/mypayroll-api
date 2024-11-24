@@ -5,7 +5,7 @@ import productValidation from "./product.validation";
 
 export const productService = (ctx: Context) => {
   return {
-    getById: async (id: number) => ctx.sequelize.models.product.findByPk(id),
+    getByPk: async (id: number) => ctx.sequelize.models.product.findByPk(id),
     view: async (args: QueryProductArgs) => {
       await ctx.checkAuth()
 

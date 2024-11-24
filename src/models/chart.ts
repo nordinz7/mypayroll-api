@@ -6,8 +6,9 @@ export default (sequelize: Sequelize) => sequelize.define('chart', {
     primaryKey: true,
     autoIncrement: true
   },
-  quantity: {
-    type: DataTypes.INTEGER,
-    allowNull: false
+  totalPrice: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    defaultValue: 0
   }
 })
