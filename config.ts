@@ -18,4 +18,7 @@ export default {
   REDIS_TTL: +(Bun.env.REDIS_TTL || 60 * 60 * 1),
 
   QUEUE_NAME: Bun.env.QUEUE_NAME || 'payroll',
+
+  ACCESS_TOKEN_EXPIRES_IN: Bun.env.ACCESS_TOKEN_EXPIRES_IN || '15m',
+  REFRESH_TOKEN_EXPIRES_IN: Bun.env.REFRESH_TOKEN_EXPIRES_IN || '7d',
 }

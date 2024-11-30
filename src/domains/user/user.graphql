@@ -14,7 +14,8 @@ type Users {
 }
 
 type Token {
-  jwt: String
+  accessToken: String
+  refreshToken: String
 }
 
 input UserQueryInput {

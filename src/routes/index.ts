@@ -31,12 +31,14 @@ export default async (request: Request, ctx: Context) => {
         try {
           const body = await request.json()
 
-          if (url.pathname === '/api/public/register') {
+          if (url.pathname === '/api/public/auth/register') {
             const result = await signUp(body, ctx)
             response = new ApiResponse(result, { status: 200 })
-          } else if (url.pathname === '/api/public/login') {
+          } else if (url.pathname === '/api/public/auth/login') {
             const result = await signIn(body, ctx)
             response = new ApiResponse(result, { status: 200 })
+          } else if (url.pathname === '/api/public/auth/refresh-token') {
+            response = new ApiResponse('Not Found', { status: 404 })
           } else {
             response = new ApiResponse('Not Found', { status: 404 })
           }

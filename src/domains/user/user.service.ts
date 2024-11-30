@@ -1,12 +1,14 @@
 import { SevenBoom } from 'graphql-apollo-errors'
-import { ActiveStatus, type CreateUserInput, type SignInInput, type UpdateUserInput, type UserQueryInput } from '../../types'
+import { ActiveStatus, type CreateUserInput, type SignInInput, type UpdateUserInput, type User, type UserQueryInput } from '../../types'
 import Joi from 'joi'
 import { Op } from 'sequelize'
 import { validateUserInput } from './helper'
 import { signJWT } from '../../utils/auth'
-import { compare } from 'bcryptjs'
+import { compare, hash } from 'bcryptjs'
 import { pick } from 'lodash'
 import type { Context } from '../..'
+import config from '../../../config'
+import ms from 'ms'
 
 export const getUser = async (uuid: string, ctx: Context) => {
   if (!uuid) {
@@ -112,6 +114,56 @@ export const unDeleteUser = async (uuid: string, ctx: Context) => {
   return (await user.update({ status: ActiveStatus.Active })).toJSON()
 }
 
+export const getUpdatedRefreshTokenFromDb = async (token: string, userUuid: string, ctx: Context) => {
+  if (!userUuid) {
+    throw SevenBoom.badData('Missing user uuid')
+  }
+
+  if (!token) {
+    throw SevenBoom.badData('Missing token')
+  }
+
+  const existingTokens = await ctx.sequelize.models.refreshToken.findAll({ where: { userUuid }, order: [['createdAt', 'DESC']] })
+
+  if (existingTokens.filter(t => t.dataValues.expiresAt > new Date()).length > 0) {
+    const existingToken = existingTokens[0]
+
+    await Promise.all(existingTokens.slice(1).map(async (t) => t.destroy()))
+
+    return existingToken.toJSON().token
+  }
+
+  await ctx.sequelize.models.refreshToken.create({ token, userUuid, expiresAt: new Date(Date.now() + ms(config.REFRESH_TOKEN_EXPIRES_IN)) })
+
+  return token
+}
+
+export const issueAccessToken = async (user: any, ctx: Context) => {
+  if (!user || !user.uuid) {
+    throw SevenBoom.badData('Missing user')
+  }
+
+  return signJWT({ user })
+}
+
+export const issueRefreshToken = async (user: any, ctx: Context) => {
+  if (!user || !user.uuid) {
+    throw SevenBoom.badData('Missing user')
+  }
+
+  let refreshToken = await signJWT({ user }, { expiresIn: config.REFRESH_TOKEN_EXPIRES_IN })
+  refreshToken = await getUpdatedRefreshTokenFromDb(refreshToken, user.uuid, ctx)
+
+  return refreshToken
+}
+
+export const issueNewTokens = async (user: any, ctx: Context) => {
+  const accessToken = await issueAccessToken(user, ctx)
+  const refreshToken = await issueRefreshToken(user, ctx)
+
+  return { accessToken, refreshToken }
+}
+
 export const signIn = async (input: SignInInput, ctx: Context) => {
   const signInSchema = Joi.object({ email: Joi.string().email().required(), password: Joi.string().required() })
 
@@ -139,17 +191,13 @@ export const signIn = async (input: SignInInput, ctx: Context) => {
 
   await ctx.cache.set(`user:${storeUser.uuid}`, storeUser)
 
-  const jwt = await signJWT({ user: storeUser })
-
-  return { jwt }
+  return issueNewTokens(storeUser, ctx)
 }
 
 export const signUp = async (input: CreateUserInput, ctx: Context) => {
   const user = await createUser(input, ctx)
 
-  const jwt = await signJWT({ user })
-
-  return { jwt }
+  return issueNewTokens(user, ctx)
 }
 
 export const resetPassword = async (email: string, ctx: Context) => {

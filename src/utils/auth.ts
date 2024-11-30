@@ -3,18 +3,19 @@ import path from 'path'
 import type { Context } from '..'
 import { getUser } from '../domains/user/user.service'
 import { SevenBoom } from 'graphql-apollo-errors'
+import config from '../../config'
 
-export const signJWT = async (payload: string | Buffer | object) => {
+export const signJWT = async (payload: string | Buffer | object, options: JWT.SignOptions = {}) => {
   const cert = await Bun.file(path.join(__dirname, '../../cert/private_key.pem')).text()
-  return JWT.sign(payload, cert, { expiresIn: '1d' })
+  return JWT.sign(payload, cert, { expiresIn: config.ACCESS_TOKEN_EXPIRES_IN, ...options })
 }
 
 export const verifyJWT = async (token: string): Promise<object | string | null> => {
   try {
     const cert = await Bun.file(path.join(__dirname, '../../cert/private_key.pem')).text()
-    return JWT.verify(token, cert, { ignoreExpiration: false })
+    return JWT.verify(token, cert)
   } catch (e) {
-    return new Error(`Failed to verify JWT: ${e instanceof Error ? e.message : 'Unknown error'}`)
+    throw SevenBoom.unauthorized(e.message)
   }
 }
 
