@@ -12,6 +12,7 @@ import { getUserFromToken, isAuthenticated } from './utils/auth'
 import { SevenBoom } from 'graphql-apollo-errors'
 import type { Queue } from 'bullmq'
 import { QueueSingleton } from './utils/queue'
+import type { YogaInitialContext } from 'graphql-yoga'
 
 
 export type ServerInstance = {
@@ -21,7 +22,7 @@ export type ServerInstance = {
   queue: Queue
 }
 
-export type Context = {
+export interface Context extends YogaInitialContext {
   sequelize: Sequelize
   cache: Redis
   queue: Queue

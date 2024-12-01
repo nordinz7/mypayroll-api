@@ -3,7 +3,7 @@ import { loadFilesSync } from '@graphql-tools/load-files'
 import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge'
 import path from 'path'
 import config from '../../config'
-
+import { useCookies } from '@whatwg-node/server-plugin-cookies'
 
 
 export default (ctx: any) => {
@@ -17,5 +17,6 @@ export default (ctx: any) => {
     graphiql: true,
     context: ctx,
     maskedErrors: config.NODE_ENV === 'production',
+    plugins: [useCookies()]
   })
 }
