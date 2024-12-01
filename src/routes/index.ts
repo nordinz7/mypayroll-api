@@ -1,5 +1,5 @@
 import type { Context } from '..'
-import { signIn, signUp } from '../domains/user/user.service'
+import { attachRefreshTokenToCookie, signIn, signUp } from '../domains/user/user.service'
 import { ApiResponse } from '../utils/request'
 
 const corsHeaders = {
@@ -34,9 +34,11 @@ export default async (request: Request, ctx: Context) => {
           if (url.pathname === '/api/public/auth/register') {
             const result = await signUp(body, ctx)
             response = new ApiResponse(result, { status: 200 })
+            attachRefreshTokenToCookie(response, result.refreshToken)
           } else if (url.pathname === '/api/public/auth/login') {
             const result = await signIn(body, ctx)
-            response = new ApiResponse(result, { status: 200 })
+            response = new ApiResponse(result, { status: 200, })
+            attachRefreshTokenToCookie(response, result.refreshToken)
           } else if (url.pathname === '/api/public/auth/refresh-token') {
             response = new ApiResponse('Not Found', { status: 404 })
           } else {

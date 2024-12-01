@@ -209,3 +209,7 @@ export const resetPassword = async (email: string, ctx: Context) => {
 
   return { message: 'Password reset link sent' }
 }
+
+export const attachRefreshTokenToCookie = (response: Response, refreshToken: string) => {
+  response.headers.append('Set-Cookie', `refreshToken=${refreshToken}; Max-Age=${ms(config.REFRESH_TOKEN_EXPIRES_IN)} path=/; SameSite=Strict`)
+}
