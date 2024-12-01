@@ -210,6 +210,20 @@ export const resetPassword = async (email: string, ctx: Context) => {
   return { message: 'Password reset link sent' }
 }
 
-export const attachRefreshTokenToCookie = (response: Response, refreshToken: string) => {
-  response.headers.append('Set-Cookie', `refreshToken=${refreshToken}; Max-Age=${ms(config.REFRESH_TOKEN_EXPIRES_IN)} path=/; SameSite=Strict`)
+export const attachRefreshTokenToCookie = (refreshToken: string, opts: { response?: Response, request?: Request }) => {
+  if (!refreshToken) {
+    throw new Error('No refresh token provided to attach to cookie')
+  }
+
+  if (!opts.response && !opts.request) {
+    throw new Error('Missing response or request object')
+  }
+
+  if (opts.request) {
+    opts.request.cookieStore && opts.request.cookieStore.set('refreshToken', refreshToken)
+  }
+
+  if (opts.response) {
+    opts.response.headers.append('Set-Cookie', `refreshToken=${refreshToken}`)
+  }
 }
