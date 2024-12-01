@@ -56,5 +56,6 @@ type Mutation {
 
   signIn(input: SignInInput): Token
   signUp(input: CreateUserInput): Token
+  refreshToken: Token
   resetPassword(email: String!): Response
 }

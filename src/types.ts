@@ -169,6 +169,7 @@ export type Mutation = {
   createUser?: Maybe<User>;
   deleteProductFromChart?: Maybe<Chart>;
   deleteUser?: Maybe<User>;
+  refreshToken?: Maybe<Token>;
   resetPassword?: Maybe<Response>;
   signIn?: Maybe<Token>;
   signUp?: Maybe<Token>;
@@ -401,7 +402,8 @@ export type TimeStamp = {
 
 export type Token = {
   __typename?: 'Token';
-  jwt?: Maybe<Scalars['String']['output']>;
+  accessToken?: Maybe<Scalars['String']['output']>;
+  refreshToken?: Maybe<Scalars['String']['output']>;
 };
 
 export type UpdateEnumerationInput = {
@@ -685,6 +687,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<MutationCreateUserArgs>>;
   deleteProductFromChart?: Resolver<Maybe<ResolversTypes['Chart']>, ParentType, ContextType, Partial<MutationDeleteProductFromChartArgs>>;
   deleteUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<MutationDeleteUserArgs>>;
+  refreshToken?: Resolver<Maybe<ResolversTypes['Token']>, ParentType, ContextType>;
   resetPassword?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'email'>>;
   signIn?: Resolver<Maybe<ResolversTypes['Token']>, ParentType, ContextType, Partial<MutationSignInArgs>>;
   signUp?: Resolver<Maybe<ResolversTypes['Token']>, ParentType, ContextType, Partial<MutationSignUpArgs>>;
@@ -744,7 +747,8 @@ export type TimeStampResolvers<ContextType = any, ParentType extends ResolversPa
 };
 
 export type TokenResolvers<ContextType = any, ParentType extends ResolversParentTypes['Token'] = ResolversParentTypes['Token']> = {
-  jwt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  accessToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  refreshToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

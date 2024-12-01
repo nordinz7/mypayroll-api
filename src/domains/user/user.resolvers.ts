@@ -1,6 +1,6 @@
 import type { Context } from '../..'
 import type { MutationCreateUserArgs, MutationDeleteUserArgs, MutationResetPasswordArgs, MutationSignInArgs, MutationUnDeleteUserArgs, MutationUpdateUserArgs, QueryUserArgs, QueryUsersArgs } from '../../types'
-import { attachRefreshTokenToCookie, createUser, deleteUser, getUser, getUsers, resetPassword, signIn, signUp, unDeleteUser, updateUser } from './user.service'
+import { attachRefreshTokenToCookie, createUser, deleteUser, getUser, getUsers, handleRefreshToken, resetPassword, signIn, signUp, unDeleteUser, updateUser } from './user.service'
 
 export default {
   Query: {
@@ -33,6 +33,9 @@ export default {
       const res = await signIn(input, ctx)
       attachRefreshTokenToCookie(res.refreshToken, { request: ctx.request })
       return res
+    },
+    refreshToken: async (_: any, __: any, ctx: Context) => {
+      return handleRefreshToken(ctx)
     },
     resetPassword: async (_: any, { email }: MutationResetPasswordArgs, ctx: Context) => {
       return resetPassword(email, ctx)

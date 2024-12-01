@@ -9,6 +9,7 @@ import { pick } from 'lodash'
 import type { Context } from '../..'
 import config from '../../../config'
 import ms from 'ms'
+import JWT from 'jsonwebtoken'
 
 export const getUser = async (uuid: string, ctx: Context) => {
   if (!uuid) {
@@ -224,6 +225,52 @@ export const attachRefreshTokenToCookie = (refreshToken: string, opts: { respons
   }
 
   if (opts.response) {
-    opts.response.headers.append('Set-Cookie', `refreshToken=${refreshToken}`)
+    opts.response.headers.append('Set-Cookie', `refreshToken=${refreshToken} ; Path=/; Max-Age=${ms(config.REFRESH_TOKEN_EXPIRES_IN) / 1000}`)
   }
 }
+
+export const handleRefreshToken = async (ctx: Context) => {
+  const rt = ctx.request.cookieStore && await ctx.request.cookieStore.get('refreshToken');
+
+  if (!rt?.value) {
+    throw SevenBoom.unauthorized('Missing refresh token');
+  }
+
+  const refToken = rt.value;
+
+  const decoded = JWT.decode(refToken);
+  //@ts-ignore
+  const userUuid = ctx.user?.uuid || decoded?.user?.uuid;
+
+
+  const transaction = await ctx.sequelize.transaction();
+  try {
+    const refreshTokens = await ctx.sequelize.models.refreshToken.findAll({
+      where: { userUuid },
+      transaction
+    });
+
+    const foundToken = refreshTokens.find(t => t.dataValues.token === refToken);
+
+    if (!foundToken) {
+      throw SevenBoom.unauthorized('Invalid refresh token');
+    }
+
+    if (foundToken.dataValues.expiresAt <= new Date()) {
+      throw SevenBoom.unauthorized('Refresh token expired. Please log out and sign in again');
+    }
+
+    await Promise.all(refreshTokens.filter(t => t.dataValues.token !== refToken).map(async (t) => t.destroy({ transaction })));
+    //@ts-ignore
+    const newTokens = await issueNewTokens({ ...ctx.user || {}, uuid: userUuid }, { ...ctx, user: { uuid: userUuid } });
+
+    await transaction.commit();
+
+    await attachRefreshTokenToCookie(newTokens.refreshToken, { request: ctx.request });
+
+    return newTokens;
+  } catch (error) {
+    await transaction.rollback();
+    throw error;
+  }
+};
