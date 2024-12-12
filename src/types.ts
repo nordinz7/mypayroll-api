@@ -72,6 +72,13 @@ export type CreateCompensationItemInput = {
   startDate: Scalars['String']['input'];
 };
 
+export type CreateEventInput = {
+  action?: InputMaybe<Scalars['String']['input']>;
+  date?: InputMaybe<Scalars['DateTime']['input']>;
+  model?: InputMaybe<Scalars['String']['input']>;
+  payload?: InputMaybe<Scalars['JSON']['input']>;
+};
+
 export type CreateUserInput = {
   confirmPassword: Scalars['String']['input'];
   email: Scalars['String']['input'];
@@ -152,6 +159,23 @@ export type Enumeration = {
   employeeId: Scalars['Int']['output'];
   id: Scalars['Int']['output'];
   updatedAt: Scalars['DateTime']['output'];
+};
+
+export type Event = {
+  __typename?: 'Event';
+  action?: Maybe<Scalars['String']['output']>;
+  date?: Maybe<Scalars['DateTime']['output']>;
+  id?: Maybe<Scalars['Int']['output']>;
+  model?: Maybe<Scalars['String']['output']>;
+  payload?: Maybe<Scalars['JSON']['output']>;
+  user?: Maybe<User>;
+  userUuid?: Maybe<Scalars['UUID']['output']>;
+};
+
+export type Events = {
+  __typename?: 'Events';
+  pagination?: Maybe<NumberPagination>;
+  rows?: Maybe<Array<Maybe<Event>>>;
 };
 
 export enum MartialStatus {
@@ -320,6 +344,8 @@ export type Query = {
   employee?: Maybe<Employee>;
   employees?: Maybe<Employees>;
   enumeration?: Maybe<Enumeration>;
+  event?: Maybe<Event>;
+  events?: Maybe<Events>;
   product?: Maybe<Product>;
   products?: Maybe<Products>;
   user?: Maybe<User>;
@@ -348,6 +374,16 @@ export type QueryEnumerationArgs = {
 };
 
 
+export type QueryEventArgs = {
+  id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryEventsArgs = {
+  input?: InputMaybe<QueryEventsInput>;
+};
+
+
 export type QueryProductArgs = {
   id?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -365,6 +401,16 @@ export type QueryUserArgs = {
 
 export type QueryUsersArgs = {
   input?: InputMaybe<UserQueryInput>;
+};
+
+export type QueryEventsInput = {
+  actions?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  isRaw?: InputMaybe<Scalars['Boolean']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  models?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  startDate?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export enum Race {
@@ -525,6 +571,7 @@ export type ResolversTypes = {
   ChartProductInput: ChartProductInput;
   CompensationItem: ResolverTypeWrapper<CompensationItem>;
   CreateCompensationItemInput: CreateCompensationItemInput;
+  CreateEventInput: CreateEventInput;
   CreateUserInput: CreateUserInput;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
   EducationLevel: EducationLevel;
@@ -533,6 +580,8 @@ export type ResolversTypes = {
   Employees: ResolverTypeWrapper<Employees>;
   EmployeesQueryInput: EmployeesQueryInput;
   Enumeration: ResolverTypeWrapper<Enumeration>;
+  Event: ResolverTypeWrapper<Event>;
+  Events: ResolverTypeWrapper<Events>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   JSON: ResolverTypeWrapper<Scalars['JSON']['output']>;
@@ -544,6 +593,7 @@ export type ResolversTypes = {
   Products: ResolverTypeWrapper<Products>;
   ProductsQueryInput: ProductsQueryInput;
   Query: ResolverTypeWrapper<{}>;
+  QueryEventsInput: QueryEventsInput;
   Race: Race;
   Religion: Religion;
   Response: ResolverTypeWrapper<Response>;
@@ -568,6 +618,7 @@ export type ResolversParentTypes = {
   ChartProductInput: ChartProductInput;
   CompensationItem: CompensationItem;
   CreateCompensationItemInput: CreateCompensationItemInput;
+  CreateEventInput: CreateEventInput;
   CreateUserInput: CreateUserInput;
   DateTime: Scalars['DateTime']['output'];
   Employee: Employee;
@@ -575,6 +626,8 @@ export type ResolversParentTypes = {
   Employees: Employees;
   EmployeesQueryInput: EmployeesQueryInput;
   Enumeration: Enumeration;
+  Event: Event;
+  Events: Events;
   Float: Scalars['Float']['output'];
   Int: Scalars['Int']['output'];
   JSON: Scalars['JSON']['output'];
@@ -584,6 +637,7 @@ export type ResolversParentTypes = {
   Products: Products;
   ProductsQueryInput: ProductsQueryInput;
   Query: {};
+  QueryEventsInput: QueryEventsInput;
   Response: Response;
   SignInInput: SignInInput;
   String: Scalars['String']['output'];
@@ -676,6 +730,23 @@ export type EnumerationResolvers<ContextType = any, ParentType extends Resolvers
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type EventResolvers<ContextType = any, ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']> = {
+  action?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  date?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  model?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  payload?: Resolver<Maybe<ResolversTypes['JSON']>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  userUuid?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EventsResolvers<ContextType = any, ParentType extends ResolversParentTypes['Events'] = ResolversParentTypes['Events']> = {
+  pagination?: Resolver<Maybe<ResolversTypes['numberPagination']>, ParentType, ContextType>;
+  rows?: Resolver<Maybe<Array<Maybe<ResolversTypes['Event']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['JSON'], any> {
   name: 'JSON';
 }
@@ -727,6 +798,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   employee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType, RequireFields<QueryEmployeeArgs, 'id'>>;
   employees?: Resolver<Maybe<ResolversTypes['Employees']>, ParentType, ContextType, Partial<QueryEmployeesArgs>>;
   enumeration?: Resolver<Maybe<ResolversTypes['Enumeration']>, ParentType, ContextType, RequireFields<QueryEnumerationArgs, 'id'>>;
+  event?: Resolver<Maybe<ResolversTypes['Event']>, ParentType, ContextType, Partial<QueryEventArgs>>;
+  events?: Resolver<Maybe<ResolversTypes['Events']>, ParentType, ContextType, Partial<QueryEventsArgs>>;
   product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType, Partial<QueryProductArgs>>;
   products?: Resolver<Maybe<ResolversTypes['Products']>, ParentType, ContextType, Partial<QueryProductsArgs>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<QueryUserArgs>>;
@@ -787,6 +860,8 @@ export type Resolvers<ContextType = any> = {
   Employee?: EmployeeResolvers<ContextType>;
   Employees?: EmployeesResolvers<ContextType>;
   Enumeration?: EnumerationResolvers<ContextType>;
+  Event?: EventResolvers<ContextType>;
+  Events?: EventsResolvers<ContextType>;
   JSON?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   Product?: ProductResolvers<ContextType>;

@@ -176,7 +176,7 @@ export const signIn = async (input: SignInInput, ctx: Context) => {
 
   const { email, password } = value
 
-  const user = await ctx.sequelize.models.user.findOne({ where: { email } })
+  const user = (await ctx.sequelize.models.user.findOne({ where: { email } }))?.toJSON()
 
   if (!user) {
     throw SevenBoom.notFound('User not found')
@@ -188,8 +188,7 @@ export const signIn = async (input: SignInInput, ctx: Context) => {
     throw SevenBoom.badRequest('Invalid password')
   }
 
-  const storeUser = pick(user.toJSON(), ['uuid', 'email', 'name'])
-
+  const storeUser = pick(user, ['uuid', 'email', 'name'])
   await ctx.cache.set(`user:${storeUser.uuid}`, storeUser)
 
   return issueNewTokens(storeUser, ctx)

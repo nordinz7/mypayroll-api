@@ -24,7 +24,8 @@ export const productService = (ctx: Context) => {
     index: async (args: QueryProductsArgs) => {
       await ctx.checkAuth()
 
-      const { limit, offset, ...where } = productValidation.validate('index', args)
+      const { input } = productValidation.validate('index', args)
+      const { limit, offset, ...where } = input
 
       const { count, rows = [] } = await ctx.sequelize.models.product.findAndCountAll({
         where,

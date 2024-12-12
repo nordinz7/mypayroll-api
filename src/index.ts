@@ -13,6 +13,7 @@ import { SevenBoom } from 'graphql-apollo-errors'
 import type { Queue } from 'bullmq'
 import { QueueSingleton } from './utils/queue'
 import type { YogaInitialContext } from 'graphql-yoga'
+import EventService from './domains/event/event.service'
 
 
 export type ServerInstance = {
@@ -28,6 +29,7 @@ export interface Context extends YogaInitialContext {
   queue: Queue
   user?: User
   checkAuth: () => void
+  addEvent: EventService['create']
 }
 
 let serverInstance: ServerInstance['server']
@@ -50,6 +52,7 @@ export const fetchWrapper = async (request: Request, misc: any): Promise<any> =>
   }
 
   ctx.checkAuth = checkAuth
+  ctx.addEvent = EventService.create
 
   if (request.url.includes('/graphql')) {
     const { user } = await getUserFromToken(request, false, ctx)

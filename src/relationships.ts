@@ -1,7 +1,8 @@
 import type { Sequelize } from 'sequelize'
 
 export default (sequelize: Sequelize) => {
-  const { compensationItem, enumeration, employee, user, product, chart, chartProduct, refreshToken } = sequelize.models
+  const { compensationItem, enumeration, employee, user, product, chart, chartProduct, refreshToken,
+    entity, event, payrollPeriod, payrollReport } = sequelize.models
 
   employee.hasOne(enumeration)
   enumeration.hasMany(compensationItem)
@@ -22,4 +23,7 @@ export default (sequelize: Sequelize) => {
   chartProduct.belongsTo(product)
 
   product.belongsTo(user, { as: 'seller', foreignKey: { allowNull: false } })
+
+  user.hasMany(event)
+  event.belongsTo(user)
 }

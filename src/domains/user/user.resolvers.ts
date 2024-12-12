@@ -13,10 +13,26 @@ export default {
   },
   Mutation: {
     createUser: async (_: any, { input }: MutationCreateUserArgs, ctx: Context) => {
-      return createUser(input, ctx)
+      const res = createUser(input, ctx)
+
+      await ctx.addEvent(ctx, {
+        model: 'user',
+        action: 'create',
+        payload: input
+      })
+
+      return res
     },
     updateUser: async (_: any, { input }: MutationUpdateUserArgs, ctx: Context) => {
-      return updateUser(input, ctx)
+      const res = updateUser(input, ctx)
+
+      await ctx.addEvent(ctx, {
+        model: 'user',
+        action: 'update',
+        payload: input
+      })
+
+      return res
     },
     deleteUser: async (_: any, { uuid }: MutationDeleteUserArgs, ctx: Context) => {
       return deleteUser(uuid, ctx)

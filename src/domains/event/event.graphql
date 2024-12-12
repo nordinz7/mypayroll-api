@@ -1,0 +1,37 @@
+type Event {
+  id: Int
+  model: String
+  action: String
+  payload: JSON
+  date: DateTime
+
+  userUuid: UUID
+  user: User
+}
+
+type Events {
+  rows: [Event]
+  pagination: numberPagination
+}
+
+input CreateEventInput {
+  model: String
+  action: String
+  payload: JSON
+  date: DateTime
+}
+
+input QueryEventsInput {
+  models: [String]
+  actions: [String]
+  startDate: DateTime
+  endDate: DateTime
+  limit: Int
+  offset: Int
+  isRaw: Boolean
+}
+
+type Query {
+  event(id: Int): Event
+  events(input: QueryEventsInput): Events
+}
