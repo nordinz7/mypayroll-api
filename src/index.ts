@@ -3,7 +3,7 @@ import graphqlPlugin from './plugins/graphql'
 import routes from './routes'
 import { DbSingletonSql } from './utils/sqldb'
 import type { Server } from 'bun'
-import type { Sequelize } from 'sequelize'
+import type { Sequelize, Transaction } from 'sequelize'
 import { ApiResponse } from './utils/request'
 import type Redis from 'ioredis'
 import { CacheSingleton } from './utils/cache'
@@ -30,6 +30,7 @@ export interface Context extends YogaInitialContext {
   user?: User
   checkAuth: () => void
   addEvent: EventService['create']
+  transaction: Transaction
 }
 
 let serverInstance: ServerInstance['server']

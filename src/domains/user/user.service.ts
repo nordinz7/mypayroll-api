@@ -124,17 +124,17 @@ export const getUpdatedRefreshTokenFromDb = async (token: string, userUuid: stri
     throw SevenBoom.badData('Missing token')
   }
 
-  const existingTokens = await ctx.sequelize.models.refreshToken.findAll({ where: { userUuid }, order: [['createdAt', 'DESC']] })
+  const existingTokens = await ctx.sequelize.models.refreshToken.findAll({ where: { userUuid }, order: [['createdAt', 'DESC']], transaction: ctx.transaction },)
 
   if (existingTokens.filter(t => t.dataValues.expiresAt > new Date()).length > 0) {
     const existingToken = existingTokens[0]
 
-    await Promise.all(existingTokens.slice(1).map(async (t) => t.destroy()))
+    await Promise.all(existingTokens.slice(1).map(async (t) => t.destroy({ transaction: ctx.transaction })))
 
     return existingToken.toJSON().token
   }
 
-  await ctx.sequelize.models.refreshToken.create({ token, userUuid, expiresAt: new Date(Date.now() + ms(config.REFRESH_TOKEN_EXPIRES_IN)) })
+  await ctx.sequelize.models.refreshToken.create({ token, userUuid, expiresAt: new Date(Date.now() + ms(config.REFRESH_TOKEN_EXPIRES_IN)) }, { transaction: ctx.transaction })
 
   return token
 }
@@ -241,25 +241,32 @@ export const handleRefreshToken = async (ctx: Context) => {
   //@ts-ignore
   const userUuid = ctx.user?.uuid || decoded?.user?.uuid;
 
-
   const transaction = await ctx.sequelize.transaction();
   try {
-    const refreshTokens = await ctx.sequelize.models.refreshToken.findAll({
-      where: { userUuid },
+    const foundToken = await ctx.sequelize.models.refreshToken.findOne({
+      where: {
+        userUuid,
+        token: refToken,
+        expiresAt: { [Op.gt]: new Date() } // Fetch only valid tokens
+      },
       transaction
     });
 
-    const foundToken = refreshTokens.find(t => t.dataValues.token === refToken);
-
     if (!foundToken) {
-      throw SevenBoom.unauthorized('Invalid refresh token');
+      throw SevenBoom.unauthorized('Invalid or expired refresh token');
     }
 
-    if (foundToken.dataValues.expiresAt <= new Date()) {
-      throw SevenBoom.unauthorized('Refresh token expired. Please log out and sign in again');
-    }
+    // Delete all other tokens in bulk
+    await ctx.sequelize.models.refreshToken.destroy({
+      where: {
+        userUuid,
+        token: { [Op.ne]: refToken } // Delete all tokens except the current one
+      },
+      transaction
+    });
 
-    await Promise.all(refreshTokens.filter(t => t.dataValues.token !== refToken).map(async (t) => t.destroy({ transaction })));
+    ctx.transaction = transaction
+
     //@ts-ignore
     const newTokens = await issueNewTokens({ ...ctx.user || {}, uuid: userUuid }, { ...ctx, user: { uuid: userUuid } });
 
