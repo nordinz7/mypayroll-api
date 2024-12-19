@@ -1,6 +1,6 @@
-import { SevenBoom } from "graphql-apollo-errors";
 import Joi from "joi";
 import { ProductStatus } from "../../types";
+import Validator from "../../utils/joi";
 
 const view = Joi.object({
   id: Joi.number().required()
@@ -37,35 +37,12 @@ const update = Joi.object({
   input: commonMutation
 })
 
-const productValidation = {
-  validate: (schema: string, data: any) => {
-    let result: { error: any, value?: any };
-    switch (schema) {
-      case 'view':
-        result = view.validate(data);
-        break;
-      case 'index':
-        result = index.validate(data);
-        break;
-      case 'create':
-        result = create.validate(data);
-        break;
-      case 'update':
-        result = update.validate(data);
-        break;
-      case 'updateStatus':
-        result = view.validate(data);
-        break;
-      default:
-        result = { error: 'Schema not found' }
-    }
-
-    if (result.error) {
-      throw SevenBoom.badRequest(result.error, data);
-    }
-
-    return result.value;
-  }
+const schemas = {
+  view,
+  index,
+  create,
+  update
 }
 
-export default productValidation;
+export default new Validator(schemas);
+

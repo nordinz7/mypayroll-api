@@ -1,5 +1,5 @@
-import { SevenBoom } from "graphql-apollo-errors";
 import Joi from "joi";
+import Validator from "../../utils/joi";
 
 const commonMutation = Joi.object({
   customerUuid: Joi.string().guid().required(),
@@ -20,29 +20,11 @@ const del = Joi.object({
   productId: Joi.number().required(),
 })
 
-const chartValidation = {
-  validate: (schema: string, data: any) => {
-    let result: { error: any, value?: any };
-    switch (schema) {
-      case 'view':
-        result = view.validate(data);
-        break;
-      case 'upsert':
-        result = upsert.validate(data);
-        break;
-      case 'delete':
-        result = del.validate(data);
-        break;
-      default:
-        result = { error: 'Schema not found' }
-    }
-
-    if (result.error) {
-      throw SevenBoom.badRequest(result.error, data);
-    }
-
-    return result.value;
-  }
+const schemas = {
+  view,
+  upsert,
+  delete: del
 }
 
-export default chartValidation;
+
+export default new Validator(schemas);
